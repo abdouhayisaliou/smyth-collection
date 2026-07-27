@@ -40,7 +40,7 @@ const slides = [
   { type: "video", src: "/videos/hero4.MP4" },
   { type: "image", src: "/images/categories/Luxury-abaya/lux4.JPG" },
   { type: "video", src: "/videos/hero5.MP4" },
-  { type: "image", src: "/images/categories/Bazin/b4.MP4" },
+  { type: "image", src: "/images/categories/Bazin/Ba1.JPG" },
   { type: "video", src: "/videos/hero6.MP4" },
   { type: "image", src: "/images/categories/Luxury-abaya/lux2.JPG" },
 
@@ -466,11 +466,12 @@ export default function Home() {
     >
                   <div className="relative aspect-[1.08/1] overflow-hidden">
                     <img
-                      src={category.image}
-                      alt={category.name}
-                      className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
-                    />
-
+                    src={category.image}
+                    alt={category.name}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
+                  />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#070503] via-[#070503]/30 to-transparent" />
 
                     <div className="absolute bottom-0 left-0 right-0 border-t border-[#d4af37]/25 bg-black/65 px-3 pb-4 pt-8 text-center backdrop-blur-md md:px-5 md:pb-5">
@@ -535,9 +536,8 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {products.map((product, index) => {
-              const currentImage = productSlides[product.id] || 0;
-
+          {products.slice(0, 8).map((product, index) => {
+          const currentImage = productSlides[product.id] || 0;
               return (
                 <Reveal
               key={product.id}
@@ -552,17 +552,19 @@ export default function Home() {
                 <video
                   src={product.images[currentImage]}
                   className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                  autoPlay
                   muted
-                  loop
                   playsInline
+                  preload="none"
+                  controls
                 />
               ) : (
                 <img
-                  src={product.images[currentImage]}
-                  alt={product.name}
-                  className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                />
+                src={product.images[currentImage]}
+                alt={product.name}
+                loading="lazy"
+                decoding="async"
+                className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+              />
               )}
 
   <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/10" />
@@ -751,6 +753,8 @@ export default function Home() {
         <img
           src="/images/collection-card.png"
           alt="Collection Smyth"
+          loading="lazy"
+          decoding="async"
           className="h-[520px] w-full object-cover"
         />
 
@@ -780,9 +784,11 @@ export default function Home() {
       <div className="absolute -bottom-5 -right-5 h-32 w-32 border-b border-r border-[#d4af37]/55" />
 
       <div className="relative border border-[#d4af37]/40 bg-[#1b100a]/45 p-3 shadow-[0_30px_90px_rgba(0,0,0,0.38)] backdrop-blur">
-        <img
+       <img
           src="/images/about-smyth.png"
           alt="Smyth Collection"
+          loading="lazy"
+          decoding="async"
           className="h-[560px] w-full object-cover"
         />
 
