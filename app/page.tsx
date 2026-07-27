@@ -548,8 +548,9 @@ export default function Home() {
                 >
                   <div className="relative aspect-[1/1] overflow-hidden">
               {product.images[currentImage].toLowerCase().endsWith(".mp4") ? (
-                <video
+               <video
                 src={product.images[currentImage]}
+                poster={product.poster}
                 className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                 autoPlay
                 muted
