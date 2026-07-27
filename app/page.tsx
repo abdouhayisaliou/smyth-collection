@@ -138,31 +138,29 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#0d0c0b] text-white">
       <section className="relative min-h-screen overflow-hidden">
-  {/* Slides du hero */}
-  {slides.map((slide, index) => (
+  {/* Une seule slide chargée à la fois */}
+<div className="absolute inset-0">
+  {slides[currentSlide].type === "video" ? (
+    <video
+      key={slides[currentSlide].src}
+      src={slides[currentSlide].src}
+      className="h-full w-full object-cover"
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="metadata"
+    />
+  ) : (
     <div
-      key={index}
-      className={`absolute inset-0 transition-opacity duration-1000 ${
-        index === currentSlide ? "opacity-100" : "opacity-0"
-      }`}
-    >
-      {slide.type === "image" ? (
-        <div
-          className="h-full w-full bg-cover bg-center"
-          style={{ backgroundImage: `url('${slide.src}')` }}
-        />
-      ) : (
-        <video
-          className="h-full w-full object-cover"
-          src={slide.src}
-          autoPlay
-          muted
-          loop
-          playsInline
-        />
-      )}
-    </div>
-  ))}
+      key={slides[currentSlide].src}
+      className="h-full w-full bg-cover bg-center"
+      style={{
+        backgroundImage: `url('${slides[currentSlide].src}')`,
+      }}
+    />
+  )}
+</div>
 
   {/* Assombrissement du fond */}
   <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-black/15" />
