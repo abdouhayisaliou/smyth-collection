@@ -1,7 +1,6 @@
 
 "use client";
 
-import Image from "next/image";
 import BackToTop from "@/components/BackToTop";
 import InstallButton from "@/components/InstallButton";
 import Link from "next/link";
@@ -32,15 +31,17 @@ import {
 
 const slides = [
   { type: "image", src: "/images/categories/Pashmina/Abaya8.JPG" },
-  { type: "video", src: "/videos/hero.MP4" },
+  { type: "video", src: "/videos/hero.mp4" },
   { type: "image", src: "/images/categories/Luxury-abaya/lux1.JPG" },
-  { type: "video", src: "/videos/hero2.MP4" }
+  { type: "video", src: "/videos/hero2.mp4" },
   { type: "image", src: "/images/categories/Pashmina/Abaya10.JPG" },
-  { type: "video", src: "/videos/hero3.MP4" },
+  { type: "video", src: "/videos/hero3.mp4" },
   { type: "image", src: "/images/categories/Pashmina/Abaya9.JPG" },
+  { type: "video", src: "/videos/hero4.mp4" },
   { type: "image", src: "/images/categories/Luxury-abaya/lux4.JPG" },
+  { type: "video", src: "/videos/hero5.mp4" },
   { type: "image", src: "/images/categories/Bazin/Ba1.JPG" },
-  { type: "video", src: "/videos/hero4.MP4" },
+  { type: "video", src: "/videos/hero6.mp4" },
   { type: "image", src: "/images/categories/Luxury-abaya/lux2.JPG" },
 
 ];
@@ -137,29 +138,31 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#0d0c0b] text-white">
       <section className="relative min-h-screen overflow-hidden">
-  {/* Une seule slide chargée à la fois */}
-<div className="absolute inset-0">
-  {slides[currentSlide].type === "video" ? (
-    <video
-      key={slides[currentSlide].src}
-      src={slides[currentSlide].src}
-      className="h-full w-full object-cover"
-      autoPlay
-      muted
-      loop
-      playsInline
-      preload="metadata"
-    />
-  ) : (
+  {/* Slides du hero */}
+  {slides.map((slide, index) => (
     <div
-      key={slides[currentSlide].src}
-      className="h-full w-full bg-cover bg-center"
-      style={{
-        backgroundImage: `url('${slides[currentSlide].src}')`,
-      }}
-    />
-  )}
-</div>
+      key={index}
+      className={`absolute inset-0 transition-opacity duration-1000 ${
+        index === currentSlide ? "opacity-100" : "opacity-0"
+      }`}
+    >
+      {slide.type === "image" ? (
+        <div
+          className="h-full w-full bg-cover bg-center"
+          style={{ backgroundImage: `url('${slide.src}')` }}
+        />
+      ) : (
+        <video
+          className="h-full w-full object-cover"
+          src={slide.src}
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+      )}
+    </div>
+  ))}
 
   {/* Assombrissement du fond */}
   <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-black/15" />
@@ -464,13 +467,12 @@ export default function Home() {
       className="group relative block overflow-hidden rounded-md border border-[#d4af37]/60 bg-[#110b06]/70 shadow-[0_18px_50px_rgba(0,0,0,0.55)] transition duration-500 hover:-translate-y-2 hover:border-[#f3ce70] hover:shadow-[0_28px_70px_rgba(212,175,55,0.18)]"
     >
                   <div className="relative aspect-[1.08/1] overflow-hidden">
-                    <Image
-                src={category.image}
-                alt={category.name}
-                fill
-                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                className="object-cover transition duration-700 group-hover:scale-110"
+                    <img
+                      src={category.image}
+                      alt={category.name}
+                      className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
                     />
+
                     <div className="absolute inset-0 bg-gradient-to-t from-[#070503] via-[#070503]/30 to-transparent" />
 
                     <div className="absolute bottom-0 left-0 right-0 border-t border-[#d4af37]/25 bg-black/65 px-3 pb-4 pt-8 text-center backdrop-blur-md md:px-5 md:pb-5">
@@ -535,8 +537,9 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-          {products.slice(0, 8).map((product, index) => {
-          const currentImage = productSlides[product.id] || 0;
+            {products.map((product, index) => {
+              const currentImage = productSlides[product.id] || 0;
+
               return (
                 <Reveal
               key={product.id}
@@ -548,24 +551,20 @@ export default function Home() {
                 >
                   <div className="relative aspect-[1/1] overflow-hidden">
               {product.images[currentImage].toLowerCase().endsWith(".mp4") ? (
-               <video
-                src={product.images[currentImage]}
-                poster={product.poster}
-                className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
-              />
+                <video
+                  src={product.images[currentImage]}
+                  className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                />
               ) : (
                 <img
-                src={product.images[currentImage]}
-                alt={product.name}
-                loading="lazy"
-                decoding="async"
-                className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-              />
+                  src={product.images[currentImage]}
+                  alt={product.name}
+                  className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                />
               )}
 
   <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/10" />
@@ -672,7 +671,7 @@ export default function Home() {
 
                         <p
                           className={`mt-1 text-[9px] font-medium uppercase tracking-wide ${
-                            product.status === "Disponible sur commande"
+                            product.status === "Sur commande"
                               ? "text-[#dfa948]"
                               : "text-[#8dc889]"
                           }`}
@@ -754,8 +753,6 @@ export default function Home() {
         <img
           src="/images/collection-card.png"
           alt="Collection Smyth"
-          loading="lazy"
-          decoding="async"
           className="h-[520px] w-full object-cover"
         />
 
@@ -785,11 +782,9 @@ export default function Home() {
       <div className="absolute -bottom-5 -right-5 h-32 w-32 border-b border-r border-[#d4af37]/55" />
 
       <div className="relative border border-[#d4af37]/40 bg-[#1b100a]/45 p-3 shadow-[0_30px_90px_rgba(0,0,0,0.38)] backdrop-blur">
-       <img
+        <img
           src="/images/about-smyth.png"
           alt="Smyth Collection"
-          loading="lazy"
-          decoding="async"
           className="h-[560px] w-full object-cover"
         />
 
