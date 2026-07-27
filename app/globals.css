@@ -24,3 +24,24 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+html {
+  scroll-behavior: smooth;
+  background: #120b07;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0;
+  background: #120b07;
+}
+
+/* Évite que le contenu soit caché par l’encoche ou la barre inférieure */
+.pwa-safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.pwa-safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
