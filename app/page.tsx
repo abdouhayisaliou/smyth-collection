@@ -32,17 +32,11 @@ import {
 
 const slides = [
   { type: "image", src: "/images/categories/Pashmina/Abaya8.JPG" },
-  {/*{ type: "video", src: "/videos/hero.MP4" },*/}
   { type: "image", src: "/images/categories/Luxury-abaya/lux1.JPG" },
-  {/*{ type: "video", src: "/videos/hero2.MP4" },*/}
   { type: "image", src: "/images/categories/Pashmina/Abaya10.JPG" },
-  {/*{ type: "video", src: "/videos/hero3.MP4" },*/}
   { type: "image", src: "/images/categories/Pashmina/Abaya9.JPG" },
-  {/*{ type: "video", src: "/videos/hero4.MP4" },*/}
   { type: "image", src: "/images/categories/Luxury-abaya/lux4.JPG" },
-  {/*{ type: "video", src: "/videos/hero5.MP4" },*/}
   { type: "image", src: "/images/categories/Bazin/Ba1.JPG" },
-  {/*{ type: "video", src: "/videos/hero6.MP4" },*/}
   { type: "image", src: "/images/categories/Luxury-abaya/lux2.JPG" },
 
 ];
