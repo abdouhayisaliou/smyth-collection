@@ -32,11 +32,15 @@ import {
 
 const slides = [
   { type: "image", src: "/images/categories/Pashmina/Abaya8.JPG" },
+  { type: "video", src: "/videos/hero.MP4" },
   { type: "image", src: "/images/categories/Luxury-abaya/lux1.JPG" },
+  { type: "video", src: "/videos/hero2.MP4" }
   { type: "image", src: "/images/categories/Pashmina/Abaya10.JPG" },
+  { type: "video", src: "/videos/hero3.MP4" },
   { type: "image", src: "/images/categories/Pashmina/Abaya9.JPG" },
   { type: "image", src: "/images/categories/Luxury-abaya/lux4.JPG" },
   { type: "image", src: "/images/categories/Bazin/Ba1.JPG" },
+  { type: "video", src: "/videos/hero4.MP4" },
   { type: "image", src: "/images/categories/Luxury-abaya/lux2.JPG" },
 
 ];
@@ -545,13 +549,14 @@ export default function Home() {
                   <div className="relative aspect-[1/1] overflow-hidden">
               {product.images[currentImage].toLowerCase().endsWith(".mp4") ? (
                 <video
-                  src={product.images[currentImage]}
-                  className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                  muted
-                  playsInline
-                  preload="none"
-                  controls
-                />
+                src={product.images[currentImage]}
+                className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+              />
               ) : (
                 <img
                 src={product.images[currentImage]}
