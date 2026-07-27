@@ -671,7 +671,7 @@ export default function Home() {
 
                         <p
                           className={`mt-1 text-[9px] font-medium uppercase tracking-wide ${
-                            product.status === "Sur commande"
+                            product.status === "Disponible sur commande"
                               ? "text-[#dfa948]"
                               : "text-[#8dc889]"
                           }`}
