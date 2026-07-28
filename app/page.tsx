@@ -102,13 +102,7 @@ const categories = [
 
 
 export default function Home() {
-  type FavoriteProduct = {
-  id: string;
-  name: string;
-  image: string;
-  price: number;
-  category?: string;
-};
+
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
@@ -161,7 +155,7 @@ const showNextFullscreenMedia = () => {
   }
 }, []);
 
-  const toggleFavorite = (productId: string) => {
+ const toggleFavorite = (productId: string) => {
   setFavorites((currentFavorites) => {
     const isAlreadyFavorite = currentFavorites.includes(productId);
 
@@ -173,14 +167,10 @@ const showNextFullscreenMedia = () => {
       "smyth-favorites",
       JSON.stringify(updatedFavorites)
     );
-     const favoriteProducts = products.filter((product) =>
-  favorites.includes(product.id),
-);
 
     return updatedFavorites;
   });
 };
-
   
  useEffect(() => {
   if (fullscreenMedia.length > 0) {
@@ -188,10 +178,6 @@ const showNextFullscreenMedia = () => {
   } else {
     document.body.style.overflow = "";
   }
-
-   const favoriteProducts = products.filter((product) =>
-  favorites.includes(product.id),
-);
 
   return () => {
     document.body.style.overflow = "";
@@ -226,22 +212,6 @@ useEffect(() => {
   };
 
   window.addEventListener("keydown", handleFullscreenKeyboard);
-const toggleFavorite = (productId: string) => {
-  setFavorites((currentFavorites) => {
-    const isAlreadyFavorite = currentFavorites.includes(productId);
-
-    const updatedFavorites = isAlreadyFavorite
-      ? currentFavorites.filter((id) => id !== productId)
-      : [...currentFavorites, productId];
-
-    localStorage.setItem(
-      "smyth-favorites",
-      JSON.stringify(updatedFavorites)
-    );
-
-    return updatedFavorites;
-  });
-};
   return () => {
     window.removeEventListener("keydown", handleFullscreenKeyboard);
   };
@@ -275,6 +245,10 @@ const changeProductImage = (
     };
   });
 };
+
+  const favoriteProducts = products.filter((product) =>
+  favorites.includes(product.id),
+);
 
   return (
     <main className="min-h-screen bg-[#0d0c0b] text-white">
