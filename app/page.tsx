@@ -138,7 +138,7 @@ const showNextFullscreenMedia = () => {
       : previousIndex + 1
   );
 };
-  useEffect(() => {
+ useEffect(() => {
   if (fullscreenMedia.length > 0) {
     document.body.style.overflow = "hidden";
   } else {
@@ -149,43 +149,69 @@ const showNextFullscreenMedia = () => {
     document.body.style.overflow = "";
   };
 }, [fullscreenMedia]);
-  useEffect(()
 
-  window.addEventListener("keydown", handleEscape);
+useEffect(() => {
+  const handleFullscreenKeyboard = (event: KeyboardEvent) => {
+    if (fullscreenMedia.length === 0) {
+      return;
+    }
+
+    if (event.key === "Escape") {
+      closeFullscreenGallery();
+    }
+
+    if (event.key === "ArrowLeft") {
+      setFullscreenIndex((previousIndex) =>
+        previousIndex === 0
+          ? fullscreenMedia.length - 1
+          : previousIndex - 1
+      );
+    }
+
+    if (event.key === "ArrowRight") {
+      setFullscreenIndex((previousIndex) =>
+        previousIndex === fullscreenMedia.length - 1
+          ? 0
+          : previousIndex + 1
+      );
+    }
+  };
+
+  window.addEventListener("keydown", handleFullscreenKeyboard);
 
   return () => {
-    window.removeEventListener("keydown", handleEscape);
+    window.removeEventListener("keydown", handleFullscreenKeyboard);
   };
+}, [fullscreenMedia]);
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+  }, 6000);
+
+  return () => clearInterval(interval);
 }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 6000);
+const changeProductImage = (
+  productId: string,
+  direction: "next" | "prev"
+) => {
+  const product = products.find((item) => item.id === productId);
+  if (!product) return;
 
-    return () => clearInterval(interval);
-  }, []);
+  setProductSlides((prev) => {
+    const current = prev[productId] || 0;
+    const total = product.images.length;
 
-  const changeProductImage = (
-    productId: string,
-    direction: "next" | "prev"
-  ) => {
-    const product = products.find((item) => item.id === productId);
-    if (!product) return;
-
-    setProductSlides((prev) => {
-      const current = prev[productId] || 0;
-      const total = product.images.length;
-
-      return {
-        ...prev,
-        [productId]:
-          direction === "next"
-            ? (current + 1) % total
-            : (current - 1 + total) % total,
-      };
-    });
-  };
+    return {
+      ...prev,
+      [productId]:
+        direction === "next"
+          ? (current + 1) % total
+          : (current - 1 + total) % total,
+    };
+  });
+};
 
   return (
     <main className="min-h-screen bg-[#0d0c0b] text-white">
