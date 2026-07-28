@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 
 import { products } from "@/data/products";
+import ProductMediaGallery from "@/components/ProductMediaGallery";
 
 const categories = {
   abayas: {
@@ -159,43 +160,26 @@ export default async function CategoryPage({
           {categoryProducts.length > 0 ? (
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
               {categoryProducts.map((product) => {
-                const media = product.images[0];
-                const isVideo = media.toLowerCase().endsWith(".mp4");
-
-                return (
+              return (
                     
                   <article
                     key={product.id}
                     className="group overflow-hidden border border-[#d4af37]/30 bg-[#100a06] shadow-[0_18px_50px_rgba(0,0,0,0.35)] transition duration-500 hover:-translate-y-2 hover:border-[#d4af37]"
                   >
-                    <div className="relative aspect-[4/5] overflow-hidden">
-                      {isVideo ? (
-                        <video
-                          src={media}
-                          autoPlay
-                          muted
-                          loop
-                          playsInline
-                          className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                        />
-                      ) : (
-                        <img
-                          src={media}
-                          alt={product.name}
-                          className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                        />
-                      )}
-
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
-
-                      <button
-                        type="button"
-                        className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full border border-[#d4af37]/40 bg-black/45 text-[#d4af37] backdrop-blur"
-                        aria-label={`Ajouter ${product.name} aux favoris`}
-                      >
-                        <Heart className="h-4 w-4" />
-                      </button>
-                    </div>
+                    <div className="relative">
+                    <ProductMediaGallery
+                      images={product.images}
+                      productName={product.name}
+                    />
+                  
+                    <button
+                      type="button"
+                      className="absolute right-3 top-3 z-30 flex h-9 w-9 items-center justify-center rounded-full border border-[#d4af37]/40 bg-black/45 text-[#d4af37] backdrop-blur transition hover:border-[#d4af37] hover:bg-[#d4af37] hover:text-black"
+                      aria-label={`Ajouter ${product.name} aux favoris`}
+                    >
+                      <Heart className="h-4 w-4" />
+                    </button>
+                  </div>
 
                     <div className="p-4">
                       <h3 className="font-serif text-xl">
