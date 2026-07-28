@@ -105,6 +105,58 @@ export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [productSlides, setProductSlides] = useState<Record<string, number>>({});
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [fullscreenMedia, setFullscreenMedia] = useState<string[]>([]);
+  const [fullscreenIndex, setFullscreenIndex] = useState(0);
+  const [fullscreenProductName, setFullscreenProductName] = useState("");
+  const openFullscreenGallery = (
+  media: string[],
+  selectedIndex: number,
+  productName: string
+) => {
+  setFullscreenMedia(media);
+  setFullscreenIndex(selectedIndex);
+  setFullscreenProductName(productName);
+};
+  const closeFullscreenGallery = () => {
+  setFullscreenMedia([]);
+  setFullscreenIndex(0);
+  setFullscreenProductName("");
+};
+
+const showPreviousFullscreenMedia = () => {
+  setFullscreenIndex((previousIndex) =>
+    previousIndex === 0
+      ? fullscreenMedia.length - 1
+      : previousIndex - 1
+  );
+};
+
+const showNextFullscreenMedia = () => {
+  setFullscreenIndex((previousIndex) =>
+    previousIndex === fullscreenMedia.length - 1
+      ? 0
+      : previousIndex + 1
+  );
+};
+  useEffect(() => {
+  if (fullscreenMedia.length > 0) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "";
+  }
+
+  return () => {
+    document.body.style.overflow = "";
+  };
+}, [fullscreenMedia]);
+  useEffect(()
+
+  window.addEventListener("keydown", handleEscape);
+
+  return () => {
+    window.removeEventListener("keydown", handleEscape);
+  };
+}, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -538,8 +590,13 @@ export default function Home() {
 
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {products.map((product, index) => {
-              const currentImage = productSlides[product.id] || 0;
-
+            onClick={() =>
+              openFullscreenGallery(
+                product.images,
+                currentImage,
+                product.name
+              )
+              }
               return (
                 <Reveal
               key={product.id}
@@ -551,18 +608,29 @@ export default function Home() {
                 >
                   <div className="relative aspect-[1/1] overflow-hidden">
               {product.images[currentImage].toLowerCase().endsWith(".mp4") ? (
-                <video
-                  src={product.images[currentImage]}
-                  className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                />
+               <video
+                    src={product.images[currentImage]}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    onClick={() =>
+                      openFullscreenGallery(
+                        product.images,
+                        currentImage,
+                        product.name
+                      )
+                    }
+                    className="h-full w-full cursor-zoom-in object-cover transition duration-700 group-hover:scale-105"
+                  />
               ) : (
                 <img
                   src={product.images[currentImage]}
                   alt={product.name}
+                  onClick={() =>
+                  openFullscreenMedia(product.images[currentImage])
+                }
                   className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                 />
               )}
@@ -1367,6 +1435,146 @@ export default function Home() {
   </div>
 </footer>
 <BackToTop />
+      {fullscreenMedia.length > 0 && (
+  <div
+    className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95"
+    onClick={closeFullscreenGallery}
+  >
+    {/* En-tête de la galerie */}
+    <div className="absolute left-0 top-0 z-30 flex w-full items-center justify-between px-4 py-4 md:px-8">
+      <div>
+        <p className="text-sm font-medium text-white md:text-base">
+          {fullscreenProductName}
+        </p>
+
+        <p className="mt-1 text-xs text-white/60">
+          {fullscreenIndex + 1} / {fullscreenMedia.length}
+        </p>
+      </div>
+
+      <button
+        type="button"
+        onClick={(event) => {
+          event.stopPropagation();
+          closeFullscreenGallery();
+        }}
+        className="flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-black/50 text-3xl font-light text-white transition hover:border-[#d4af37] hover:bg-[#d4af37] hover:text-black"
+        aria-label="Fermer la galerie"
+      >
+        ×
+      </button>
+    </div>
+
+    {/* Flèche précédente */}
+    {fullscreenMedia.length > 1 && (
+      <button
+        type="button"
+        onClick={(event) => {
+          event.stopPropagation();
+          showPreviousFullscreenMedia();
+        }}
+        className="absolute left-3 top-1/2 z-30 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/50 text-3xl text-white transition hover:border-[#d4af37] hover:bg-[#d4af37] hover:text-black md:left-8 md:h-14 md:w-14"
+        aria-label="Média précédent"
+      >
+        ‹
+      </button>
+    )}
+
+    {/* Média principal */}
+    <div
+      className="relative flex h-full w-full items-center justify-center px-16 pb-24 pt-20 md:px-28"
+      onClick={(event) => event.stopPropagation()}
+    >
+      {/\.(mp4|webm|mov)$/i.test(
+        fullscreenMedia[fullscreenIndex]
+      ) ? (
+        <video
+          key={fullscreenMedia[fullscreenIndex]}
+          src={fullscreenMedia[fullscreenIndex]}
+          controls
+          autoPlay
+          playsInline
+          className="max-h-[78vh] max-w-full object-contain"
+        >
+          Votre navigateur ne prend pas en charge cette vidéo.
+        </video>
+      ) : (
+        <img
+          key={fullscreenMedia[fullscreenIndex]}
+          src={fullscreenMedia[fullscreenIndex]}
+          alt={`${fullscreenProductName} - média ${
+            fullscreenIndex + 1
+          }`}
+          className="max-h-[78vh] max-w-full object-contain"
+        />
+      )}
+    </div>
+
+    {/* Flèche suivante */}
+    {fullscreenMedia.length > 1 && (
+      <button
+        type="button"
+        onClick={(event) => {
+          event.stopPropagation();
+          showNextFullscreenMedia();
+        }}
+        className="absolute right-3 top-1/2 z-30 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/50 text-3xl text-white transition hover:border-[#d4af37] hover:bg-[#d4af37] hover:text-black md:right-8 md:h-14 md:w-14"
+        aria-label="Média suivant"
+      >
+        ›
+      </button>
+    )}
+
+    {/* Miniatures */}
+    {fullscreenMedia.length > 1 && (
+      <div
+        className="absolute bottom-4 left-1/2 z-30 flex max-w-[90vw] -translate-x-1/2 gap-2 overflow-x-auto rounded-xl border border-white/10 bg-black/60 p-2 backdrop-blur-md"
+        onClick={(event) => event.stopPropagation()}
+      >
+        {fullscreenMedia.map((media, index) => {
+          const isVideo = /\.(mp4|webm|mov)$/i.test(media);
+
+          return (
+            <button
+              key={`${media}-${index}`}
+              type="button"
+              onClick={() => setFullscreenIndex(index)}
+              className={`relative h-14 w-14 flex-none overflow-hidden rounded-md border-2 transition md:h-16 md:w-16 ${
+                fullscreenIndex === index
+                  ? "border-[#d4af37]"
+                  : "border-transparent opacity-60 hover:opacity-100"
+              }`}
+              aria-label={`Afficher le média ${index + 1}`}
+            >
+              {isVideo ? (
+                <>
+                  <video
+                    src={media}
+                    muted
+                    playsInline
+                    preload="metadata"
+                    className="h-full w-full object-cover"
+                  />
+
+                  <span className="absolute inset-0 flex items-center justify-center bg-black/25 text-lg text-white">
+                    ▶
+                  </span>
+                </>
+              ) : (
+                <img
+                  src={media}
+                  alt=""
+                  loading="lazy"
+                  className="h-full w-full object-cover"
+                />
+              )}
+            </button>
+          );
+        })}
+      </div>
+    )}
+  </div>
+)}
 
     </main>
   );
