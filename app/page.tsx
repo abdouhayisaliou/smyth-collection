@@ -616,13 +616,6 @@ const changeProductImage = (
 
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {products.map((product, index) => {
-            onClick={() =>
-              openFullscreenGallery(
-                product.images,
-                currentImage,
-                product.name
-              )
-              }
               return (
                 <Reveal
               key={product.id}
@@ -651,13 +644,19 @@ const changeProductImage = (
                     className="h-full w-full cursor-zoom-in object-cover transition duration-700 group-hover:scale-105"
                   />
               ) : (
-                <img
+                <Image
                   src={product.images[currentImage]}
                   alt={product.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 25vw"
                   onClick={() =>
-                  openFullscreenMedia(product.images[currentImage])
-                }
-                  className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                    openFullscreenGallery(
+                      product.images,
+                      currentImage,
+                      product.name
+                    )
+                  }
+                  className="cursor-zoom-in object-cover transition duration-700 group-hover:scale-105"
                 />
               )}
 
