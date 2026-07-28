@@ -186,6 +186,10 @@ const showNextFullscreenMedia = () => {
     document.body.style.overflow = "";
   }
 
+   const favoriteProducts = products.filter((product) =>
+  favorites.includes(product.id),
+);
+
   return () => {
     document.body.style.overflow = "";
   };
@@ -1686,7 +1690,144 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
     )}
   </div>
 )}
+{isFavoritesOpen && (
+  <div className="fixed inset-0 z-[200]">
+    {/* Fond sombre */}
+    <button
+      type="button"
+      aria-label="Fermer les favoris"
+      onClick={() => setIsFavoritesOpen(false)}
+      className="absolute inset-0 bg-black/75 backdrop-blur-sm"
+    />
 
+    {/* Panneau */}
+    <aside className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col border-l border-[#d4af37]/30 bg-[#0b0704] shadow-2xl">
+      {/* En-tête */}
+      <div className="flex items-center justify-between border-b border-white/10 px-5 py-5">
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#d4af37]">
+            Smyth Collection
+          </p>
+
+          <h2 className="mt-1 font-serif text-3xl text-white">
+            Mes favoris
+          </h2>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setIsFavoritesOpen(false)}
+          className="flex h-10 w-10 items-center justify-center border border-white/20 text-white transition hover:border-[#d4af37] hover:text-[#d4af37]"
+          aria-label="Fermer"
+        >
+          ×
+        </button>
+      </div>
+
+      {/* Contenu */}
+      <div className="flex-1 overflow-y-auto px-5 py-5">
+        {favoriteProducts.length > 0 ? (
+          <div className="space-y-4">
+            {favoriteProducts.map((product) => {
+              const firstMedia = product.images[0];
+              const isVideo =
+                firstMedia?.toLowerCase().endsWith(".mp4") ||
+                firstMedia?.toLowerCase().endsWith(".webm");
+
+              return (
+                <article
+                  key={product.id}
+                  className="flex gap-4 border border-white/10 bg-white/[0.03] p-3"
+                >
+                  {/* Média */}
+                  <div className="h-28 w-24 shrink-0 overflow-hidden bg-black">
+                    {isVideo ? (
+                      <video
+                        src={firstMedia}
+                        muted
+                        loop
+                        playsInline
+                        preload="metadata"
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <img
+                        src={firstMedia}
+                        alt={product.name}
+                        className="h-full w-full object-cover"
+                      />
+                    )}
+                  </div>
+
+                  {/* Infos */}
+                  <div className="flex min-w-0 flex-1 flex-col">
+                    <p className="text-[9px] uppercase tracking-[0.18em] text-[#d4af37]">
+                      Favori
+                    </p>
+
+                    <h3 className="mt-1 line-clamp-2 font-serif text-lg leading-5 text-white">
+                      {product.name}
+                    </h3>
+
+                    {product.pricing?.[0] && (
+                      <p className="mt-2 text-sm font-semibold text-[#d4af37]">
+                        {product.pricing[0].price}
+                      </p>
+                    )}
+
+                    <div className="mt-auto flex items-center gap-2 pt-3">
+                      <a
+                        href={`https://wa.me/4917623345700?text=${encodeURIComponent(
+                          `Bonjour Smyth Collection, je souhaite avoir des informations sur : ${product.name}`,
+                        )}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex flex-1 items-center justify-center gap-2 border border-[#d4af37]/50 px-3 py-2 text-[9px] font-bold uppercase tracking-[0.12em] text-[#d4af37] transition hover:bg-[#d4af37] hover:text-black"
+                      >
+                        <MessageCircle className="h-3.5 w-3.5" />
+                        Commander
+                      </a>
+
+                      <button
+                        type="button"
+                        onClick={() => toggleFavorite(product.id)}
+                        className="flex h-9 w-9 items-center justify-center border border-white/20 text-white transition hover:border-red-400 hover:text-red-400"
+                        aria-label={`Retirer ${product.name} des favoris`}
+                      >
+                        <Heart className="h-4 w-4 fill-current" />
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="flex h-full flex-col items-center justify-center px-6 text-center">
+            <Heart className="h-14 w-14 text-[#d4af37]/45" />
+
+            <h3 className="mt-5 font-serif text-3xl text-white">
+              Aucun favori
+            </h3>
+
+            <p className="mt-3 max-w-xs text-sm leading-6 text-white/55">
+              Ajoutez les articles qui vous intéressent pour les retrouver
+              rapidement ici.
+            </p>
+
+            <button
+              type="button"
+              onClick={() => setIsFavoritesOpen(false)}
+              className="mt-6 border border-[#d4af37]/50 px-5 py-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[#d4af37] transition hover:bg-[#d4af37] hover:text-black"
+            >
+              Découvrir la boutique
+            </button>
+          </div>
+        )}
+      </div>
+    </aside>
+  </div>
+)}
     </main>
   );
 }
