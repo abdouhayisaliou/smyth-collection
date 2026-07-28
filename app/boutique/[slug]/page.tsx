@@ -1,6 +1,8 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import {
+import { notFound, useParams } from "next/navigation";import {
   ArrowLeft,
   Heart,
   MessageCircle,
@@ -70,16 +72,10 @@ const categories = {
 
 type CategorySlug = keyof typeof categories;
 
-type CategoryPageProps = {
-  params: Promise<{
-    slug: string;
-  }>;
-};
-
-export default async function CategoryPage({
-  params,
-}: CategoryPageProps) {
-  const { slug } = await params;
+export default function CategoryPage() {
+  const params = useParams<{ slug: string }>();
+  const slug = params.slug;
+  const [favorites, setFavorites] = useState<string[]>([]);
 
   if (!(slug in categories)) {
     notFound();
@@ -92,6 +88,41 @@ export default async function CategoryPage({
     product.categorySlugs.includes(categorySlug),
   );
 
+  useEffect(() => {
+  const savedFavorites = localStorage.getItem("smyth-favorites");
+
+  if (!savedFavorites) {
+    return;
+  }
+
+  try {
+    const parsedFavorites = JSON.parse(savedFavorites);
+
+    if (Array.isArray(parsedFavorites)) {
+      setFavorites(parsedFavorites);
+    }
+  } catch {
+    localStorage.removeItem("smyth-favorites");
+  }
+}, []);
+
+  const toggleFavorite = (productId: string) => {
+  setFavorites((currentFavorites) => {
+    const isAlreadyFavorite = currentFavorites.includes(productId);
+
+    const updatedFavorites = isAlreadyFavorite
+      ? currentFavorites.filter((id) => id !== productId)
+      : [...currentFavorites, productId];
+
+    localStorage.setItem(
+      "smyth-favorites",
+      JSON.stringify(updatedFavorites),
+    );
+
+    return updatedFavorites;
+  });
+};
+  
   return (
     <main className="min-h-screen bg-[#0b0704] text-white">
       {/* En-tête de la catégorie */}
@@ -180,14 +211,31 @@ export default async function CategoryPage({
                       images={product.images}
                       productName={product.name}
                     />
-
                     {/* Favori */}
                     <button
                       type="button"
-                      className="absolute right-3 top-3 z-40 flex h-9 w-9 items-center justify-center rounded-full border border-[#d4af37]/40 bg-black/55 text-[#d4af37] backdrop-blur transition hover:border-[#d4af37] hover:bg-[#d4af37] hover:text-black"
-                      aria-label={`Ajouter ${product.name} aux favoris`}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        toggleFavorite(product.id);
+                      }}
+                      className={`absolute right-3 top-3 z-40 flex h-9 w-9 items-center justify-center rounded-full border backdrop-blur transition ${
+                        favorites.includes(product.id)
+                          ? "border-[#d4af37] bg-[#d4af37] text-black"
+                          : "border-[#d4af37]/40 bg-black/55 text-[#d4af37] hover:border-[#d4af37] hover:bg-[#d4af37] hover:text-black"
+                      }`}
+                      aria-label={
+                        favorites.includes(product.id)
+                          ? `Retirer ${product.name} des favoris`
+                          : `Ajouter ${product.name} aux favoris`
+                      }
+                      aria-pressed={favorites.includes(product.id)}
                     >
-                      <Heart className="h-4 w-4" />
+                      <Heart
+                        className={`h-4 w-4 ${
+                          favorites.includes(product.id) ? "fill-current" : ""
+                        }`}
+                      />
                     </button>
                   </div>
 
