@@ -293,37 +293,31 @@ const changeProductImage = (
       </a>
     </nav>
 
-    <div className="flex items-center gap-4 text-white">
-      <button
-        type="button"
-        onClick={() => setIsSearchOpen(true)}
-        className="hidden transition hover:text-[#d4af37] md:block"
-        aria-label="Rechercher"
-      >
-        <Search className="h-5 w-5" />
-      </button>
+<div className="flex items-center gap-2 text-white sm:gap-3 md:gap-4">
+  <button
+  type="button"
+  onClick={() => setIsSearchOpen(true)}
+  className="flex h-9 w-9 items-center justify-center transition hover:text-[#d4af37]"
+  aria-label="Rechercher"
+>
+  <Search className="h-[18px] w-[18px] md:h-5 md:w-5" />
+</button>
 
       <button
-        type="button"
-        onClick={() => setIsFavoritesOpen(true)}
-        className="hidden transition hover:text-[#d4af37] md:block"
-        aria-label="Ouvrir les favoris"
-      >
-        <Heart className="h-5 w-5" />
-      </button>
+  type="button"
+  onClick={() => setIsFavoritesOpen(true)}
+  className="relative flex h-9 w-9 items-center justify-center transition hover:text-[#d4af37]"
+  aria-label="Ouvrir les favoris"
+>
+  <Heart className="h-[18px] w-[18px] md:h-5 md:w-5" />
+</button>
 
       <button
-        type="button"
-        onClick={() => setIsCartOpen(true)}
-        className="relative hidden transition hover:text-[#d4af37] md:block"
-        aria-label="Ouvrir le panier"
-      >
-        <ShoppingBag className="h-5 w-5" />
-
-        <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-[#d4af37] text-[9px] font-bold text-black">
-          0
-        </span>
-      </button>
+  type="button"
+  onClick={() => setIsCartOpen(true)}
+  className="relative flex h-9 w-9 items-center justify-center transition hover:text-[#d4af37]"
+  aria-label="Ouvrir le panier"
+>
 
       <button
         type="button"
