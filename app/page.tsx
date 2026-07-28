@@ -293,41 +293,47 @@ const changeProductImage = (
       </a>
     </nav>
 
-<div className="flex items-center gap-2 text-white sm:gap-3 md:gap-4">
+<div className="flex items-center gap-1 text-white sm:gap-2 md:gap-4">
+  {/* Recherche */}
   <button
-  type="button"
-  onClick={() => setIsSearchOpen(true)}
-  className="flex h-9 w-9 items-center justify-center transition hover:text-[#d4af37]"
-  aria-label="Rechercher"
->
-  <Search className="h-[18px] w-[18px] md:h-5 md:w-5" />
-</button>
+    type="button"
+    onClick={() => setIsSearchOpen(true)}
+    className="flex h-9 w-9 items-center justify-center transition hover:text-[#d4af37]"
+    aria-label="Rechercher"
+  >
+    <Search className="h-[18px] w-[18px] md:h-5 md:w-5" />
+  </button>
 
-      <button
-  type="button"
-  onClick={() => setIsFavoritesOpen(true)}
-  className="relative flex h-9 w-9 items-center justify-center transition hover:text-[#d4af37]"
-  aria-label="Ouvrir les favoris"
->
-  <Heart className="h-[18px] w-[18px] md:h-5 md:w-5" />
-</button>
+  {/* Favoris */}
+  <button
+    type="button"
+    onClick={() => setIsFavoritesOpen(true)}
+    className="relative flex h-9 w-9 items-center justify-center transition hover:text-[#d4af37]"
+    aria-label="Ouvrir les favoris"
+  >
+    <Heart className="h-[18px] w-[18px] md:h-5 md:w-5" />
+  </button>
 
-      <button
-  type="button"
-  onClick={() => setIsCartOpen(true)}
-  className="relative flex h-9 w-9 items-center justify-center transition hover:text-[#d4af37]"
-  aria-label="Ouvrir le panier"
->
+  {/* Panier */}
+  <button
+    type="button"
+    onClick={() => setIsCartOpen(true)}
+    className="relative flex h-9 w-9 items-center justify-center transition hover:text-[#d4af37]"
+    aria-label="Ouvrir le panier"
+  >
+    <ShoppingBag className="h-[18px] w-[18px] md:h-5 md:w-5" />
+  </button>
 
-      <button
-        type="button"
-        onClick={() => setIsMenuOpen(true)}
-        className="lg:hidden"
-        aria-label="Ouvrir le menu"
-      >
-        <Menu className="h-6 w-6" />
-      </button>
-    </div>
+  {/* Menu mobile */}
+  <button
+    type="button"
+    onClick={() => setIsMenuOpen(true)}
+    className="flex h-9 w-9 items-center justify-center transition hover:text-[#d4af37] lg:hidden"
+    aria-label="Ouvrir le menu"
+  >
+    <Menu className="h-5 w-5" />
+  </button>
+</div>
   </header>
 
   {/* Menu mobile */}
