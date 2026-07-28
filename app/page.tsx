@@ -546,37 +546,43 @@ const changeProductImage = (
     <Link
       href={`/boutique/${category.slug}`}
       className="group relative block overflow-hidden rounded-md border border-[#d4af37]/60 bg-[#110b06]/70 shadow-[0_18px_50px_rgba(0,0,0,0.55)] transition duration-500 hover:-translate-y-2 hover:border-[#f3ce70] hover:shadow-[0_28px_70px_rgba(212,175,55,0.18)]"
-    >
-                  <div className="relative aspect-[1.08/1] overflow-hidden">
-                    <img
-                      src={category.image}
-                      alt={category.name}
-                      className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
-                    />
+    ><div className="relative aspect-[1/1] overflow-hidden">
+  {/\.(mp4|webm|mov)(\?.*)?$/i.test(product.images[currentImage]) ? (
+    <video
+      src={product.images[currentImage]}
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      onClick={() =>
+        openFullscreenGallery(
+          product.images,
+          currentImage,
+          product.name
+        )
+      }
+      className="relative z-10 h-full w-full cursor-zoom-in object-cover transition duration-700 group-hover:scale-105"
+    />
+  ) : (
+    <Image
+      src={product.images[currentImage]}
+      alt={product.name}
+      fill
+      sizes="(max-width: 768px) 50vw, 20vw"
+      priority={index < 5}
+      onClick={() =>
+        openFullscreenGallery(
+          product.images,
+          currentImage,
+          product.name
+        )
+      }
+      className="z-10 cursor-zoom-in object-cover transition duration-700 group-hover:scale-105"
+    />
+  )}
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#070503] via-[#070503]/30 to-transparent" />
-
-                    <div className="absolute bottom-0 left-0 right-0 border-t border-[#d4af37]/25 bg-black/65 px-3 pb-4 pt-8 text-center backdrop-blur-md md:px-5 md:pb-5">
-                      <div className="absolute -top-7 left-1/2 flex h-14 w-14 -translate-x-1/2 items-center justify-center rounded-full border border-[#d4af37] bg-[#130d08] shadow-[0_0_25px_rgba(212,175,55,0.22)]">
-                        <Icon
-                          className="h-5 w-5 text-[#d4af37]"
-                          strokeWidth={1.5}
-                        />
-                      </div>
-
-                      <h3 className="font-serif text-2xl text-white md:text-3xl">
-                        {category.name}
-                      </h3>
-
-                      <p className="mt-1.5 text-[11px] font-medium text-[#d4af37] md:text-sm">
-                        Voir la sélection{" "}
-                        <span className="ml-1 inline-block transition-transform duration-300 group-hover:translate-x-1">
-                          →
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                  <div className="pointer-events-none absolute inset-y-[-30%] -left-[70%] z-30 w-[35%] rotate-[18deg] bg-gradient-to-r from-transparent via-[#f5d98a]/30 to-transparent opacity-0 blur-md transition-all duration-1000 ease-out group-hover:left-[135%] group-hover:opacity-100" />
+  <div className="pointer-events-none absolute inset-0 z-20 bg-gradient-to-t from-black/65 via-transparent to-black/10" />
                  </Link>
   </Reveal>
               );
@@ -664,11 +670,9 @@ const changeProductImage = (
                 />
               )}
 
-  <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/10" />
+<div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/10" />
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/10" />
-
-                    <span className="absolute left-3 top-3 border border-[#d4af37]/60 bg-[#0b0805]/75 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-[#d4af37] backdrop-blur">
+  <span className="absolute left-3 top-3 z-30 border border-[#d4af37]/60 bg-[#0b0805]/75 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-[#d4af37] backdrop-blur">
                       {product.categorySlugs
   .map((category) => {
     const labels: Record<string, string> = {
@@ -689,31 +693,39 @@ const changeProductImage = (
 
                     <button
                       type="button"
-                      onClick={() => changeProductImage(product.id, "prev")}
-                      className="absolute left-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center border border-white/25 bg-black/50 text-white/90 opacity-0 backdrop-blur transition group-hover:opacity-100 hover:border-[#d4af37] hover:text-[#d4af37]"
+                      onClick={(event) => {
+                      event.stopPropagation();
+                      changeProductImage(product.id, "prev");
+                    }}
+                      className="absolute left-2 top-1/2 z-30 flex h-8 w-8 -translate-y-1/2 items-center justify-center border border-white/25 bg-black/50 text-white/90 opacity-0 backdrop-blur transition group-hover:opacity-100 hover:border-[#d4af37] hover:text-[#d4af37]"
                     >
                       <ChevronLeft className="h-4 w-4" />
                     </button>
 
                     <button
                       type="button"
-                      onClick={() => changeProductImage(product.id, "next")}
-                      className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center border border-white/25 bg-black/50 text-white/90 opacity-0 backdrop-blur transition group-hover:opacity-100 hover:border-[#d4af37] hover:text-[#d4af37]"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  changeProductImage(product.id, "next");
+                }}                      
+                   className="absolute right-2 top-1/2 z-30 flex h-8 w-8 -translate-y-1/2 items-center justify-center border border-white/25 bg-black/50 text-white/90 opacity-0 backdrop-blur transition group-hover:opacity-100 hover:border-[#d4af37] hover:text-[#d4af37]"
                     >
                       <ChevronRight className="h-4 w-4" />
                     </button>
 
-                    <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
+                    <div className="absolute bottom-3 left-1/2 z-30 flex -translate-x-1/2 gap-1.5">
                       {product.images.map((_, index) => (
                         <button
                           key={index}
                           type="button"
-                          onClick={() =>
-                            setProductSlides((prev) => ({
-                              ...prev,
-                              [product.id]: index,
-                            }))
-                          }
+                          onClick={(event) => {
+                              event.stopPropagation();
+                            
+                              setProductSlides((prev) => ({
+                                ...prev,
+                                [product.id]: index,
+                              }));
+                            }}
                           className={`h-1 rounded-full transition-all ${
                             index === currentImage
                               ? "w-5 bg-[#d4af37]"
