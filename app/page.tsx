@@ -814,8 +814,8 @@ const changeProductImage = (
     event.stopPropagation();
     toggleFavorite(product.id);
   }}
-  className="absolute right-3 top-3 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-black/50 text-white backdrop-blur-md transition hover:border-[#d4af37] hover:text-[#d4af37]"
-  aria-label={
+className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/20 text-white transition hover:border-[#d4af37] hover:text-[#d4af37]"
+    aria-label={
     favorites.includes(product.id)
       ? "Retirer des favoris"
       : "Ajouter aux favoris"
