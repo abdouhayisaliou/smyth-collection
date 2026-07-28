@@ -102,8 +102,16 @@ const categories = [
 
 
 export default function Home() {
+  type FavoriteProduct = {
+  id: string;
+  name: string;
+  image: string;
+  price: number;
+  category?: string;
+};
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
+  const [favorites, setFavorites] = useState<string[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [productSlides, setProductSlides] = useState<Record<string, number>>({});
@@ -141,6 +149,36 @@ const showNextFullscreenMedia = () => {
       : previousIndex + 1
   );
 };
+  useEffect(() => {
+  const savedFavorites = localStorage.getItem("smyth-favorites");
+
+  if (savedFavorites) {
+    try {
+      setFavorites(JSON.parse(savedFavorites));
+    } catch {
+      localStorage.removeItem("smyth-favorites");
+    }
+  }
+}, []);
+
+  const toggleFavorite = (productId: string) => {
+  setFavorites((currentFavorites) => {
+    const isAlreadyFavorite = currentFavorites.includes(productId);
+
+    const updatedFavorites = isAlreadyFavorite
+      ? currentFavorites.filter((id) => id !== productId)
+      : [...currentFavorites, productId];
+
+    localStorage.setItem(
+      "smyth-favorites",
+      JSON.stringify(updatedFavorites)
+    );
+
+    return updatedFavorites;
+  });
+};
+
+  
  useEffect(() => {
   if (fullscreenMedia.length > 0) {
     document.body.style.overflow = "hidden";
@@ -181,7 +219,22 @@ useEffect(() => {
   };
 
   window.addEventListener("keydown", handleFullscreenKeyboard);
+const toggleFavorite = (productId: string) => {
+  setFavorites((currentFavorites) => {
+    const isAlreadyFavorite = currentFavorites.includes(productId);
 
+    const updatedFavorites = isAlreadyFavorite
+      ? currentFavorites.filter((id) => id !== productId)
+      : [...currentFavorites, productId];
+
+    localStorage.setItem(
+      "smyth-favorites",
+      JSON.stringify(updatedFavorites)
+    );
+
+    return updatedFavorites;
+  });
+};
   return () => {
     window.removeEventListener("keydown", handleFullscreenKeyboard);
   };
@@ -306,13 +359,19 @@ const changeProductImage = (
 
   {/* Favoris */}
   <button
-    type="button"
-    onClick={() => setIsFavoritesOpen(true)}
-    className="relative flex h-9 w-9 items-center justify-center transition hover:text-[#d4af37]"
-    aria-label="Ouvrir les favoris"
-  >
-    <Heart className="h-[18px] w-[18px] md:h-5 md:w-5" />
-  </button>
+  type="button"
+  onClick={() => setIsFavoritesOpen(true)}
+  className="relative flex h-9 w-9 items-center justify-center transition hover:text-[#d4af37]"
+  aria-label="Ouvrir les favoris"
+>
+  <Heart className="h-[18px] w-[18px] md:h-5 md:w-5" />
+
+  {favorites.length > 0 && (
+    <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#d4af37] px-1 text-[10px] font-bold text-black">
+      {favorites.length}
+    </span>
+  )}
+</button>
 
   {/* Panier */}
   <button
@@ -749,11 +808,27 @@ const changeProductImage = (
                       </div>
 
                       <button
-                        type="button"
-                        className="mt-1 text-[#d4af37]/80 transition hover:text-[#f4d47d]"
-                      >
-                        <Heart className="h-4 w-4" />
-                      </button>
+  type="button"
+  onClick={(event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    toggleFavorite(product.id);
+  }}
+  className="absolute right-3 top-3 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-black/50 text-white backdrop-blur-md transition hover:border-[#d4af37] hover:text-[#d4af37]"
+  aria-label={
+    favorites.includes(product.id)
+      ? "Retirer des favoris"
+      : "Ajouter aux favoris"
+  }
+>
+  <Heart
+    className={`h-5 w-5 transition ${
+      favorites.includes(product.id)
+        ? "fill-[#d4af37] text-[#d4af37]"
+        : "text-white"
+    }`}
+  />
+</button>
                     </div>
 
                     <div className="mt-4 flex items-center justify-between gap-3 border-t border-white/10 pt-3">
