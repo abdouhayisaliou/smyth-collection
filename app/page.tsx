@@ -173,6 +173,9 @@ const showNextFullscreenMedia = () => {
       "smyth-favorites",
       JSON.stringify(updatedFavorites)
     );
+     const favoriteProducts = products.filter((product) =>
+  favorites.includes(product.id),
+);
 
     return updatedFavorites;
   });
