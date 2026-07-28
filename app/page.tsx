@@ -1,6 +1,7 @@
 
 "use client";
 
+import Image from "next/image";
 import BackToTop from "@/components/BackToTop";
 import InstallButton from "@/components/InstallButton";
 import Link from "next/link";
@@ -27,6 +28,8 @@ import {
   ChevronRight,
   Mail,
   Send,
+  Image as ImageIcon,
+
 } from "lucide-react";
 
 const slides = [
