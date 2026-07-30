@@ -1585,11 +1585,11 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
 <BackToTop />
       {fullscreenMedia.length > 0 && (
   <div
-    className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95"
-    onClick={closeFullscreenGallery}
-  >
+  className="fixed inset-0 z-[9999] flex h-[100dvh] max-h-[100dvh] w-full flex-col overflow-hidden bg-black/95"
+  onClick={closeFullscreenGallery}
+>
     {/* En-tête de la galerie */}
-    <div className="absolute left-0 top-0 z-30 flex w-full items-center justify-between px-4 py-4 md:px-8">
+    <div className="absolute left-0 top-0 z-30 flex w-full items-center justify-between px-4 pb-3 pt-[max(12px,env(safe-area-inset-top))] md:px-8 md:py-4">
       <div>
         <p className="text-sm font-medium text-white md:text-base">
           {fullscreenProductName}
@@ -1606,7 +1606,7 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
           event.stopPropagation();
           closeFullscreenGallery();
         }}
-        className="flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-black/50 text-3xl font-light text-white transition hover:border-[#d4af37] hover:bg-[#d4af37] hover:text-black"
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/30 bg-black/50 text-2xl font-light text-white transition hover:border-[#d4af37] hover:bg-[#d4af37] hover:text-black md:h-11 md:w-11 md:text-3xl"
         aria-label="Fermer la galerie"
       >
         ×
@@ -1621,7 +1621,7 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
           event.stopPropagation();
           showPreviousFullscreenMedia();
         }}
-        className="absolute left-3 top-1/2 z-30 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/50 text-3xl text-white transition hover:border-[#d4af37] hover:bg-[#d4af37] hover:text-black md:left-8 md:h-14 md:w-14"
+        className="absolute left-2 top-1/2 z-30 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/55 text-2xl text-white transition hover:border-[#d4af37] hover:bg-[#d4af37] hover:text-black md:left-8 md:h-14 md:w-14 md:text-3xl"
         aria-label="Média précédent"
       >
         ‹
@@ -1630,9 +1630,14 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
 
     {/* Média principal */}
     <div
-      className="relative flex h-full w-full items-center justify-center px-16 pb-24 pt-20 md:px-28"
-      onClick={(event) => event.stopPropagation()}
-    >
+  className="
+    relative flex min-h-0 w-full flex-1 items-center justify-center
+    overflow-hidden px-3 pb-20
+    pt-[max(76px,calc(env(safe-area-inset-top)+64px))]
+    md:px-28 md:pb-24 md:pt-20
+  "
+  onClick={(event) => event.stopPropagation()}
+>
       {/\.(mp4|webm|mov)$/i.test(
         fullscreenMedia[fullscreenIndex]
       ) ? (
@@ -1642,7 +1647,7 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
           controls
           autoPlay
           playsInline
-          className="max-h-[78vh] max-w-full object-contain"
+          className="h-auto max-h-full w-auto max-w-full object-contain"
         >
           Votre navigateur ne prend pas en charge cette vidéo.
         </video>
@@ -1653,7 +1658,7 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
           alt={`${fullscreenProductName} - média ${
             fullscreenIndex + 1
           }`}
-          className="max-h-[78vh] max-w-full object-contain"
+          className="h-auto max-h-full w-auto max-w-full object-contain"
         />
       )}
     </div>
@@ -1666,7 +1671,7 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
           event.stopPropagation();
           showNextFullscreenMedia();
         }}
-        className="absolute right-3 top-1/2 z-30 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/50 text-3xl text-white transition hover:border-[#d4af37] hover:bg-[#d4af37] hover:text-black md:right-8 md:h-14 md:w-14"
+        className="absolute right-2 top-1/2 z-30 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/55 text-2xl text-white transition hover:border-[#d4af37] hover:bg-[#d4af37] hover:text-black md:right-8 md:h-14 md:w-14 md:text-3xl"
         aria-label="Média suivant"
       >
         ›
@@ -1676,7 +1681,12 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
     {/* Miniatures */}
     {fullscreenMedia.length > 1 && (
       <div
-        className="absolute bottom-4 left-1/2 z-30 flex max-w-[90vw] -translate-x-1/2 gap-2 overflow-x-auto rounded-xl border border-white/10 bg-black/60 p-2 backdrop-blur-md"
+        className="
+          absolute left-1/2 z-30 flex w-[calc(100%-24px)] max-w-xl
+          -translate-x-1/2 gap-2 overflow-x-auto rounded-xl
+          border border-white/10 bg-black/60 p-2 backdrop-blur-md
+          bottom-[max(10px,env(safe-area-inset-bottom))]
+        "
         onClick={(event) => event.stopPropagation()}
       >
         {fullscreenMedia.map((media, index) => {
@@ -1687,7 +1697,7 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
               key={`${media}-${index}`}
               type="button"
               onClick={() => setFullscreenIndex(index)}
-              className={`relative h-14 w-14 flex-none overflow-hidden rounded-md border-2 transition md:h-16 md:w-16 ${
+              className={`relative h-12 w-12 flex-none overflow-hidden rounded-md border-2 transition sm:h-14 sm:w-14 md:h-16 md:w-16 ${
                 fullscreenIndex === index
                   ? "border-[#d4af37]"
                   : "border-transparent opacity-60 hover:opacity-100"
