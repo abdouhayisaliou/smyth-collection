@@ -148,7 +148,7 @@ const showNextFullscreenMedia = () => {
       : previousIndex + 1
   );
 };
-  useEffect(() => {
+ useEffect(() => {
   const savedFavorites = localStorage.getItem("smyth-favorites");
 
   if (savedFavorites) {
@@ -158,8 +158,9 @@ const showNextFullscreenMedia = () => {
       localStorage.removeItem("smyth-favorites");
     }
   }
-},
-            useEffect(() => {
+}, []);
+
+useEffect(() => {
   if (isSearchOpen) {
     document.body.style.overflow = "hidden";
   } else {
