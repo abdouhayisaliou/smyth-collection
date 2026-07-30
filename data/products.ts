@@ -52,7 +52,7 @@ export const products: Product[] = [
   ],
   sizes: ["52", "54", "56", "58", "60", "62"],
   pricing: [
-    { quantity: 1, price: "140 €" },
+    { quantity: 1, price: "139,99 €" },
   ],
   status: "Disponible immédiatement",
   description:
