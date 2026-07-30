@@ -103,6 +103,7 @@ const categories = [
 
 export default function Home() {
 
+  const [searchTerm, setSearchTerm] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
@@ -126,6 +127,10 @@ export default function Home() {
   setFullscreenMedia([]);
   setFullscreenIndex(0);
   setFullscreenProductName("");
+};
+  const closeSearch = () => {
+  setIsSearchOpen(false);
+  setSearchTerm("");
 };
 
 const showPreviousFullscreenMedia = () => {
@@ -167,7 +172,7 @@ const showNextFullscreenMedia = () => {
       "smyth-favorites",
       JSON.stringify(updatedFavorites)
     );
-
+    
     return updatedFavorites;
   });
 };
@@ -250,7 +255,45 @@ const changeProductImage = (
   favorites.includes(product.id),
 );
 
-  return (
+const normalizedSearchTerm = searchTerm
+  .toLowerCase()
+  .trim()
+  .normalize("NFD")
+  .replace(/[\u0300-\u036f]/g, "");
+
+const searchWords = normalizedSearchTerm
+  .split(/\s+/)
+  .filter(Boolean);
+
+const searchResults = products.filter((product) => {
+  if (searchWords.length === 0) {
+    return false;
+  }
+
+  const searchableContent = [
+    product.name,
+    product.description ?? "",
+    product.status,
+    product.categorySlugs.join(" "),
+    product.sizes.map((size) => String(size)).join(" "),
+    product.pricing
+      .map(
+        (offer) =>
+          `${String(offer.quantity)} ${String(offer.price)}`
+      )
+      .join(" "),
+  ]
+    .join(" ")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+
+  return searchWords.every((word) =>
+    searchableContent.includes(word)
+  );
+});
+
+return (
     <main className="min-h-screen bg-[#0d0c0b] text-white">
       <section className="relative min-h-screen overflow-hidden">
   {/* Slides du hero */}
@@ -1799,6 +1842,266 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
             >
               Découvrir la boutique
             </button>
+          </div>
+        )}
+      </div>
+    </aside>
+  </div>
+)}
+      {isSearchOpen && (
+  <div className="fixed inset-0 z-[300]">
+    {/* Arrière-plan sombre */}
+    <button
+      type="button"
+      aria-label="Fermer la recherche"
+      onClick={closeSearch}
+      className="absolute inset-0 bg-black/75 backdrop-blur-sm"
+    />
+
+    {/* Panneau latéral */}
+    <aside className="absolute left-0 top-0 flex h-full w-full max-w-xl flex-col border-r border-[#d4af37]/30 bg-[#0b0704] shadow-2xl">
+      {/* En-tête */}
+      <div className="border-b border-white/10 px-5 py-5">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#d4af37]">
+              Smyth Collection
+            </p>
+
+            <h2 className="mt-1 font-serif text-3xl text-white">
+              Rechercher
+            </h2>
+          </div>
+
+          <button
+            type="button"
+            onClick={closeSearch}
+            className="flex h-10 w-10 items-center justify-center border border-white/20 text-2xl text-white transition hover:border-[#d4af37] hover:text-[#d4af37]"
+            aria-label="Fermer la recherche"
+          >
+            ×
+          </button>
+        </div>
+
+        {/* Champ de recherche */}
+        <div className="relative mt-5">
+          <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#d4af37]" />
+
+          <input
+            type="search"
+            autoFocus
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+            placeholder="Nom, catégorie, taille, prix..."
+            className="w-full border border-[#d4af37]/30 bg-black/20 py-4 pl-12 pr-12 text-sm text-white outline-none placeholder:text-white/35 focus:border-[#d4af37]"
+          />
+
+          {searchTerm.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setSearchTerm("")}
+              className="absolute right-4 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center text-xl text-white/60 transition hover:text-[#d4af37]"
+              aria-label="Effacer la recherche"
+            >
+              ×
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Contenu du panneau */}
+      <div className="flex-1 overflow-y-auto px-5 py-5">
+        {!searchTerm.trim() ? (
+          /* État initial */
+          <div className="flex h-full flex-col items-center justify-center px-6 text-center">
+            <Search className="h-14 w-14 text-[#d4af37]/40" />
+
+            <h3 className="mt-5 font-serif text-3xl text-white">
+              Que recherchez-vous ?
+            </h3>
+
+            <p className="mt-3 max-w-sm text-sm leading-6 text-white/55">
+              Recherchez une tenue, une catégorie, une taille, un prix
+              ou une disponibilité.
+            </p>
+
+            <div className="mt-6 flex flex-wrap justify-center gap-2">
+              {[
+                "Abaya",
+                "Lace",
+                "Bazin",
+                "Dubai",
+                "56",
+                "Disponible",
+              ].map((suggestion) => (
+                <button
+                  key={suggestion}
+                  type="button"
+                  onClick={() => setSearchTerm(suggestion)}
+                  className="border border-[#d4af37]/35 px-3 py-2 text-xs text-[#d4af37] transition hover:bg-[#d4af37] hover:text-black"
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : searchResults.length > 0 ? (
+          /* Résultats trouvés */
+          <div>
+            <p className="mb-4 text-xs uppercase tracking-[0.18em] text-white/50">
+              {searchResults.length} résultat
+              {searchResults.length > 1 ? "s" : ""}
+            </p>
+
+            <div className="space-y-4">
+              {searchResults.map((product) => {
+                const firstMedia = product.images[0];
+
+                const isVideo = /\.(mp4|webm|mov)$/i.test(
+                  firstMedia
+                );
+
+                return (
+                  <article
+                    key={product.id}
+                    className="flex gap-4 border border-white/10 bg-white/[0.03] p-3 transition hover:border-[#d4af37]"
+                  >
+                    {/* Image ou vidéo */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        closeSearch();
+
+                        openFullscreenGallery(
+                          product.images,
+                          0,
+                          product.name
+                        );
+                      }}
+                      className="h-28 w-24 shrink-0 overflow-hidden bg-black"
+                      aria-label={`Voir ${product.name}`}
+                    >
+                      {isVideo ? (
+                        <video
+                          src={firstMedia}
+                          muted
+                          playsInline
+                          preload="metadata"
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <img
+                          src={firstMedia}
+                          alt={product.name}
+                          className="h-full w-full object-cover"
+                        />
+                      )}
+                    </button>
+
+                    {/* Informations */}
+                    <div className="flex min-w-0 flex-1 flex-col">
+                      <p className="text-[9px] uppercase tracking-[0.18em] text-[#d4af37]">
+                        {product.categorySlugs.join(" • ")}
+                      </p>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          closeSearch();
+
+                          openFullscreenGallery(
+                            product.images,
+                            0,
+                            product.name
+                          );
+                        }}
+                        className="mt-1 text-left"
+                      >
+                        <h3 className="line-clamp-2 font-serif text-lg leading-5 text-white transition hover:text-[#d4af37]">
+                          {product.name}
+                        </h3>
+                      </button>
+
+                      {product.pricing[0] && (
+                        <p className="mt-2 text-sm font-semibold text-[#d4af37]">
+                          {product.pricing[0].quantity} pièces :{" "}
+                          {product.pricing[0].price}
+                        </p>
+                      )}
+
+                      <p className="mt-1 text-[10px] uppercase tracking-wide text-white/50">
+                        Tailles : {product.sizes.join(" • ")}
+                      </p>
+
+                      <p className="mt-1 text-[10px] text-white/55">
+                        {product.status}
+                      </p>
+
+                      <div className="mt-auto flex items-center gap-2 pt-3">
+                        <a
+                          href={`https://wa.me/4917623345700?text=${encodeURIComponent(
+                            `Bonjour Smyth Collection, je souhaite avoir des informations sur : ${product.name}`
+                          )}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="flex flex-1 items-center justify-center gap-2 border border-[#d4af37]/50 px-3 py-2 text-[9px] font-bold uppercase tracking-[0.12em] text-[#d4af37] transition hover:bg-[#d4af37] hover:text-black"
+                        >
+                          <MessageCircle className="h-3.5 w-3.5" />
+                          Commander
+                        </a>
+
+                        <button
+                          type="button"
+                          onClick={() => toggleFavorite(product.id)}
+                          className="flex h-9 w-9 items-center justify-center border border-white/20 transition hover:border-[#d4af37]"
+                          aria-label={
+                            favorites.includes(product.id)
+                              ? `Retirer ${product.name} des favoris`
+                              : `Ajouter ${product.name} aux favoris`
+                          }
+                        >
+                          <Heart
+                            className={`h-4 w-4 ${
+                              favorites.includes(product.id)
+                                ? "fill-[#d4af37] text-[#d4af37]"
+                                : "text-white"
+                            }`}
+                          />
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          /* Aucun résultat */
+          <div className="flex h-full flex-col items-center justify-center px-6 text-center">
+            <Search className="h-14 w-14 text-[#d4af37]/40" />
+
+            <h3 className="mt-5 font-serif text-3xl text-white">
+              Aucun résultat
+            </h3>
+
+            <p className="mt-3 max-w-sm text-sm leading-6 text-white/55">
+              Aucun produit ne correspond à « {searchTerm} ».
+            </p>
+
+            <div className="mt-6 flex flex-wrap justify-center gap-2">
+              {["Abaya", "Lace", "Bazin", "Sac", "56"].map(
+                (suggestion) => (
+                  <button
+                    key={suggestion}
+                    type="button"
+                    onClick={() => setSearchTerm(suggestion)}
+                    className="border border-[#d4af37]/35 px-3 py-2 text-xs text-[#d4af37] transition hover:bg-[#d4af37] hover:text-black"
+                  >
+                    {suggestion}
+                  </button>
+                )
+              )}
+            </div>
           </div>
         )}
       </div>
