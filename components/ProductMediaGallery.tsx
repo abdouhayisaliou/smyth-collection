@@ -332,13 +332,6 @@ export default function ProductMediaGallery({
     )}
   </div>
 )}
-                  </button>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      )}
     </>
   );
 }
