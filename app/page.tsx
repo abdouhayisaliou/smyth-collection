@@ -169,7 +169,7 @@ const showNextFullscreenMedia = () => {
   return () => {
     document.body.style.overflow = "";
   };
-}, [isSearchOpen]);[]);
+}, [isSearchOpen]);
   
 
  const toggleFavorite = (productId: string) => {
