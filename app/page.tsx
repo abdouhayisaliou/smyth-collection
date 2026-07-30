@@ -158,7 +158,19 @@ const showNextFullscreenMedia = () => {
       localStorage.removeItem("smyth-favorites");
     }
   }
-}, []);
+},
+            useEffect(() => {
+  if (isSearchOpen) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "";
+  }
+
+  return () => {
+    document.body.style.overflow = "";
+  };
+}, [isSearchOpen]);[]);
+  
 
  const toggleFavorite = (productId: string) => {
   setFavorites((currentFavorites) => {
@@ -1849,22 +1861,36 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
   </div>
 )}
       {isSearchOpen && (
-  <div className="fixed inset-0 z-[300]">
-    {/* Arrière-plan sombre */}
+  <div className="fixed inset-0 z-[300] overflow-hidden bg-[#0b0704] md:bg-transparent">
+    {/* Fond sombre visible uniquement sur tablette et ordinateur */}
     <button
       type="button"
       aria-label="Fermer la recherche"
       onClick={closeSearch}
-      className="absolute inset-0 bg-black/75 backdrop-blur-sm"
+      className="absolute inset-0 hidden bg-black/75 backdrop-blur-sm md:block"
     />
 
-    {/* Panneau latéral */}
-<aside className="absolute left-0 top-0 flex h-full w-[92%] max-w-xl flex-col border-r border-[#d4af37]/30 bg-[#0b0704] shadow-2xl sm:w-full">
-  {/* En-tête */}
-      <div className="border-b border-white/10 px-4 py-4 sm:px-5 sm:py-5">
+    {/* Recherche plein écran mobile, panneau latéral ordinateur */}
+    <aside
+      className="
+        relative flex h-[100dvh] max-h-[100dvh] w-full flex-col
+        overflow-hidden bg-[#0b0704]
+        md:absolute md:left-0 md:top-0 md:w-[92%] md:max-w-xl
+        md:border-r md:border-[#d4af37]/30 md:shadow-2xl
+      "
+    >
+      {/* Zone fixe en haut */}
+      <div
+        className="
+          shrink-0 border-b border-white/10 bg-[#0b0704]
+          px-4 pb-4 pt-[max(16px,env(safe-area-inset-top))]
+          sm:px-5
+        "
+      >
+        {/* Titre et fermeture */}
         <div className="flex items-center justify-between gap-4">
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#d4af37]">
+          <div className="min-w-0">
+            <p className="text-[9px] font-semibold uppercase tracking-[0.25em] text-[#d4af37] sm:text-[10px]">
               Smyth Collection
             </p>
 
@@ -1876,7 +1902,7 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
           <button
             type="button"
             onClick={closeSearch}
-            className="flex h-9 w-9 items-center justify-center border border-white/20 text-xl text-white transition hover:border-[#d4af37] hover:text-[#d4af37] sm:h-10 sm:w-10 sm:text-2xl"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/20 text-xl text-white transition hover:border-[#d4af37] hover:text-[#d4af37] sm:h-10 sm:w-10"
             aria-label="Fermer la recherche"
           >
             ×
@@ -1884,7 +1910,7 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
         </div>
 
         {/* Champ de recherche */}
-        <div className="relative mt-5">
+        <div className="relative mt-4">
           <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#d4af37] sm:left-4 sm:h-5 sm:w-5" />
 
           <input
@@ -1893,14 +1919,22 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
             placeholder="Nom, catégorie, taille, prix..."
-            className="w-full border border-[#d4af37]/30 bg-black/20 py-3 pl-11 pr-11 text-xs text-white outline-none placeholder:text-white/35 focus:border-[#d4af37] sm:py-4 sm:pl-12 sm:pr-12 sm:text-sm"
+            enterKeyHint="search"
+            autoComplete="off"
+            className="
+              w-full rounded-sm border border-[#d4af37]/30
+              bg-black/25 py-3 pl-11 pr-11 text-base text-white
+              outline-none placeholder:text-sm placeholder:text-white/35
+              focus:border-[#d4af37]
+              sm:py-4 sm:pl-12 sm:pr-12
+            "
           />
 
           {searchTerm.length > 0 && (
             <button
               type="button"
               onClick={() => setSearchTerm("")}
-              className="absolute right-4 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center text-xl text-white/60 transition hover:text-[#d4af37]"
+              className="absolute right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-xl text-white/60 transition hover:text-[#d4af37]"
               aria-label="Effacer la recherche"
             >
               ×
@@ -1909,20 +1943,27 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
         </div>
       </div>
 
-      {/* Contenu du panneau */}
-      <div className="flex-1 overflow-y-auto px-3 py-4 sm:px-5 sm:py-5">
+      {/* Seule cette zone défile */}
+      <div
+        className="
+          min-h-0 flex-1 overflow-y-auto overscroll-contain
+          px-3 py-4
+          pb-[max(20px,env(safe-area-inset-bottom))]
+          sm:px-5 sm:py-5
+        "
+      >
         {!searchTerm.trim() ? (
           /* État initial */
-          <div className="flex h-full flex-col items-center justify-center px-6 text-center">
+          <div className="flex min-h-full flex-col items-center justify-center px-5 py-10 text-center">
             <Search className="h-10 w-10 text-[#d4af37]/40 sm:h-14 sm:w-14" />
 
-            <h3 className="mt-4 font-serif text-2xl text-white sm:mt-5 sm:text-3xl">
+            <h3 className="mt-4 font-serif text-2xl text-white sm:text-3xl">
               Que recherchez-vous ?
             </h3>
 
             <p className="mt-3 max-w-sm text-sm leading-6 text-white/55">
-              Recherchez une tenue, une catégorie, une taille, un prix
-              ou une disponibilité.
+              Recherchez une tenue, une catégorie, une taille, un prix ou une
+              disponibilité.
             </p>
 
             <div className="mt-6 flex flex-wrap justify-center gap-2">
@@ -1938,7 +1979,7 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
                   key={suggestion}
                   type="button"
                   onClick={() => setSearchTerm(suggestion)}
-                  className="border border-[#d4af37]/35 px-2.5 py-1.5 text-[10px] text-[#d4af37] transition hover:bg-[#d4af37] hover:text-black sm:px-3 sm:py-2 sm:text-xs"
+                  className="border border-[#d4af37]/35 px-3 py-2 text-[11px] text-[#d4af37] transition hover:bg-[#d4af37] hover:text-black sm:text-xs"
                 >
                   {suggestion}
                 </button>
@@ -1946,26 +1987,23 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
             </div>
           </div>
         ) : searchResults.length > 0 ? (
-          /* Résultats trouvés */
+          /* Résultats */
           <div>
-            <p className="mb-4 text-xs uppercase tracking-[0.18em] text-white/50">
+            <p className="mb-3 text-[10px] uppercase tracking-[0.18em] text-white/50 sm:mb-4 sm:text-xs">
               {searchResults.length} résultat
               {searchResults.length > 1 ? "s" : ""}
             </p>
 
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {searchResults.map((product) => {
                 const firstMedia = product.images[0];
-
-                const isVideo = /\.(mp4|webm|mov)$/i.test(
-                  firstMedia
-                );
+                const isVideo = /\.(mp4|webm|mov)$/i.test(firstMedia);
 
                 return (
                   <article
-                  key={product.id}
-                  className="flex gap-3 border border-white/10 bg-white/[0.03] p-2.5 transition hover:border-[#d4af37] sm:gap-4 sm:p-3"
-                >
+                    key={product.id}
+                    className="flex gap-3 border border-white/10 bg-white/[0.03] p-2.5 transition hover:border-[#d4af37] sm:gap-4 sm:p-3"
+                  >
                     {/* Image ou vidéo */}
                     <button
                       type="button"
@@ -2000,7 +2038,7 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
 
                     {/* Informations */}
                     <div className="flex min-w-0 flex-1 flex-col">
-                      <p className="text-[9px] uppercase tracking-[0.18em] text-[#d4af37]">
+                      <p className="line-clamp-1 text-[8px] uppercase tracking-[0.15em] text-[#d4af37] sm:text-[9px]">
                         {product.categorySlugs.join(" • ")}
                       </p>
 
@@ -2033,18 +2071,19 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
                         Tailles : {product.sizes.join(" • ")}
                       </p>
 
-                      <p className="mt-1 text-[10px] text-white/55">
+                      <p className="mt-1 line-clamp-1 text-[9px] text-white/55 sm:text-[10px]">
                         {product.status}
                       </p>
 
-                      <div className="mt-auto flex items-center gap-2 pt-3">
+                      <div className="mt-auto flex items-center gap-2 pt-2 sm:pt-3">
                         <a
                           href={`https://wa.me/4917623345700?text=${encodeURIComponent(
                             `Bonjour Smyth Collection, je souhaite avoir des informations sur : ${product.name}`
                           )}`}
                           target="_blank"
                           rel="noreferrer"
-className="flex flex-1 items-center justify-center gap-1.5 border border-[#d4af37]/50 px-2 py-2 text-[8px] font-bold uppercase tracking-[0.1em] text-[#d4af37] transition hover:bg-[#d4af37] hover:text-black sm:gap-2 sm:px-3 sm:text-[9px]"                        >
+                          className="flex flex-1 items-center justify-center gap-1.5 border border-[#d4af37]/50 px-2 py-2 text-[8px] font-bold uppercase tracking-[0.08em] text-[#d4af37] transition hover:bg-[#d4af37] hover:text-black sm:gap-2 sm:px-3 sm:text-[9px]"
+                        >
                           <MessageCircle className="h-3.5 w-3.5" />
                           Commander
                         </a>
@@ -2071,16 +2110,15 @@ className="flex flex-1 items-center justify-center gap-1.5 border border-[#d4af3
                     </div>
                   </article>
                 );
-            
               })}
             </div>
           </div>
         ) : (
           /* Aucun résultat */
-          <div className="flex h-full flex-col items-center justify-center px-6 text-center">
+          <div className="flex min-h-full flex-col items-center justify-center px-5 py-10 text-center">
             <Search className="h-10 w-10 text-[#d4af37]/40 sm:h-14 sm:w-14" />
 
-           <h3 className="mt-4 font-serif text-2xl text-white sm:mt-5 sm:text-3xl">
+            <h3 className="mt-4 font-serif text-2xl text-white sm:text-3xl">
               Aucun résultat
             </h3>
 
@@ -2095,7 +2133,7 @@ className="flex flex-1 items-center justify-center gap-1.5 border border-[#d4af3
                     key={suggestion}
                     type="button"
                     onClick={() => setSearchTerm(suggestion)}
-                    className="border border-[#d4af37]/35 px-2.5 py-1.5 text-[10px] text-[#d4af37] transition hover:bg-[#d4af37] hover:text-black sm:px-3 sm:py-2 sm:text-xs"
+                    className="border border-[#d4af37]/35 px-3 py-2 text-[11px] text-[#d4af37] transition hover:bg-[#d4af37] hover:text-black sm:text-xs"
                   >
                     {suggestion}
                   </button>
@@ -2107,7 +2145,7 @@ className="flex flex-1 items-center justify-center gap-1.5 border border-[#d4af3
       </div>
     </aside>
   </div>
-)}
+)} 
     </main>
   );
 }
