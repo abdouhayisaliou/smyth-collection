@@ -184,154 +184,154 @@ export default function ProductMediaGallery({
         )}
       </div>
 
-{/* Galerie plein écran */}
-{isFullscreenOpen && (
-  <div
-    className="fixed inset-0 z-[99999] flex h-[100dvh] max-h-[100dvh] w-full flex-col overflow-hidden bg-black/95 backdrop-blur-sm"
-    onClick={closeFullscreenGallery}
-  >
-    {/* En-tête */}
-    <div className="absolute left-0 top-0 z-40 flex w-full items-center justify-between border-b border-white/10 bg-black/30 px-4 pb-3 pt-[max(12px,env(safe-area-inset-top))] backdrop-blur-md md:px-8 md:py-4">
-      <div className="min-w-0 pr-4">
-        <p className="truncate text-sm font-medium text-white md:text-base">
-          {productName}
-        </p>
-
-        <p className="mt-1 text-xs text-white/60">
-          {currentIndex + 1} / {images.length}
-        </p>
-      </div>
-
-      <button
-        type="button"
-        onClick={(event) => {
-          event.stopPropagation();
-          closeFullscreenGallery();
-        }}
-        className="flex h-9 w-9 flex-none items-center justify-center rounded-full border border-white/30 bg-black/50 text-white transition hover:border-[#d4af37] hover:bg-[#d4af37] hover:text-black md:h-11 md:w-11"
-        aria-label="Fermer la galerie"
-      >
-        <X className="h-5 w-5 md:h-6 md:w-6" />
-      </button>
-    </div>
-
-    {/* Flèche précédente */}
-    {images.length > 1 && (
-      <button
-        type="button"
-        onClick={(event) => {
-          event.stopPropagation();
-          showPreviousMedia();
-        }}
-        className="absolute left-2 top-1/2 z-40 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/60 text-white backdrop-blur transition hover:border-[#d4af37] hover:bg-[#d4af37] hover:text-black md:left-8 md:h-14 md:w-14"
-        aria-label="Média précédent"
-      >
-        <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
-      </button>
-    )}
-
-    {/* Média principal plein écran */}
-    <div
-      className="
-        relative flex min-h-0 w-full flex-1 items-center justify-center
-        overflow-hidden px-3 pb-20
-        pt-[max(76px,calc(env(safe-area-inset-top)+64px))]
-        md:px-28 md:pb-24 md:pt-20
-      "
-      onClick={(event) => event.stopPropagation()}
-    >
-      {isVideoMedia(currentMedia) ? (
-        <video
-          key={currentMedia}
-          src={currentMedia}
-          controls
-          autoPlay
-          playsInline
-          preload="metadata"
-          className="h-auto max-h-full w-auto max-w-full object-contain"
+      {/* Galerie plein écran */}
+      {isFullscreenOpen && (
+        <div
+          className="fixed inset-0 z-[99999] flex h-[100dvh] max-h-[100dvh] w-full flex-col overflow-hidden bg-black/95 backdrop-blur-sm"
+          onClick={closeFullscreenGallery}
         >
-          Votre navigateur ne prend pas en charge cette vidéo.
-        </video>
-      ) : (
-        <img
-          key={currentMedia}
-          src={currentMedia}
-          alt={`${productName} - média ${currentIndex + 1}`}
-          className="h-auto max-h-full w-auto max-w-full object-contain"
-        />
-      )}
-    </div>
+          {/* En-tête */}
+          <div className="absolute left-0 top-0 z-40 flex w-full items-center justify-between border-b border-white/10 bg-black/30 px-4 pb-3 pt-[max(12px,env(safe-area-inset-top))] backdrop-blur-md md:px-8 md:py-4">
+            <div className="min-w-0 pr-4">
+              <p className="truncate text-sm font-medium text-white md:text-base">
+                {productName}
+              </p>
 
-    {/* Flèche suivante */}
-    {images.length > 1 && (
-      <button
-        type="button"
-        onClick={(event) => {
-          event.stopPropagation();
-          showNextMedia();
-        }}
-        className="absolute right-2 top-1/2 z-40 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/60 text-white backdrop-blur transition hover:border-[#d4af37] hover:bg-[#d4af37] hover:text-black md:right-8 md:h-14 md:w-14"
-        aria-label="Média suivant"
-      >
-        <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
-      </button>
-    )}
+              <p className="mt-1 text-xs text-white/60">
+                {currentIndex + 1} / {images.length}
+              </p>
+            </div>
 
-    {/* Miniatures */}
-    {images.length > 1 && (
-      <div
-        className="
-          absolute left-1/2 z-40 flex w-[calc(100%-24px)] max-w-xl
-          -translate-x-1/2 gap-2 overflow-x-auto rounded-xl
-          border border-white/10 bg-black/70 p-2 backdrop-blur-md
-          bottom-[max(10px,env(safe-area-inset-bottom))]
-        "
-        onClick={(event) => event.stopPropagation()}
-      >
-        {images.map((media, index) => {
-          const mediaIsVideo = isVideoMedia(media);
-
-          return (
             <button
-              key={`${media}-${index}`}
               type="button"
-              onClick={() => setCurrentIndex(index)}
-              className={`relative h-12 w-12 flex-none overflow-hidden rounded-md border-2 transition sm:h-14 sm:w-14 md:h-16 md:w-16 ${
-                currentIndex === index
-                  ? "border-[#d4af37]"
-                  : "border-transparent opacity-60 hover:opacity-100"
-              }`}
-              aria-label={`Afficher le média ${index + 1}`}
+              onClick={(event) => {
+                event.stopPropagation();
+                closeFullscreenGallery();
+              }}
+              className="flex h-9 w-9 flex-none items-center justify-center rounded-full border border-white/30 bg-black/50 text-white transition hover:border-[#d4af37] hover:bg-[#d4af37] hover:text-black md:h-11 md:w-11"
+              aria-label="Fermer la galerie"
             >
-              {mediaIsVideo ? (
-                <>
-                  <video
-                    src={media}
-                    muted
-                    playsInline
-                    preload="metadata"
-                    className="h-full w-full object-cover"
-                  />
-
-                  <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/35 text-white">
-                    <Play className="h-4 w-4 fill-current" />
-                  </span>
-                </>
-              ) : (
-                <img
-                  src={media}
-                  alt=""
-                  loading="lazy"
-                  className="h-full w-full object-cover"
-                />
-              )}
+              <X className="h-5 w-5 md:h-6 md:w-6" />
             </button>
-          );
-        })}
-      </div>
-    )}
-  </div>
-)}
+          </div>
+
+          {/* Flèche précédente */}
+          {images.length > 1 && (
+            <button
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation();
+                showPreviousMedia();
+              }}
+              className="absolute left-2 top-1/2 z-40 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/60 text-white backdrop-blur transition hover:border-[#d4af37] hover:bg-[#d4af37] hover:text-black md:left-8 md:h-14 md:w-14"
+              aria-label="Média précédent"
+            >
+              <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
+            </button>
+          )}
+
+          {/* Média principal plein écran */}
+          <div
+            className="
+              relative flex min-h-0 w-full flex-1 items-center justify-center
+              overflow-hidden px-3 pb-20
+              pt-[max(76px,calc(env(safe-area-inset-top)+64px))]
+              md:px-20 md:pb-28 md:pt-24
+            "
+            onClick={(event) => event.stopPropagation()}
+          >
+            {isVideoMedia(currentMedia) ? (
+              <video
+                key={currentMedia}
+                src={currentMedia}
+                controls
+                autoPlay
+                playsInline
+                preload="metadata"
+                className="h-auto max-h-[calc(100dvh-180px)] w-auto max-w-[calc(100vw-180px)] object-contain"
+              >
+                Votre navigateur ne prend pas en charge cette vidéo.
+              </video>
+            ) : (
+              <img
+                key={currentMedia}
+                src={currentMedia}
+                alt={`${productName} - média ${currentIndex + 1}`}
+                className="h-auto max-h-[calc(100dvh-180px)] w-auto max-w-[calc(100vw-180px)] object-contain"
+              />
+            )}
+          </div>
+
+          {/* Flèche suivante */}
+          {images.length > 1 && (
+            <button
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation();
+                showNextMedia();
+              }}
+              className="absolute right-2 top-1/2 z-40 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/60 text-white backdrop-blur transition hover:border-[#d4af37] hover:bg-[#d4af37] hover:text-black md:right-8 md:h-14 md:w-14"
+              aria-label="Média suivant"
+            >
+              <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
+            </button>
+          )}
+
+          {/* Miniatures */}
+          {images.length > 1 && (
+            <div
+              className="
+                absolute left-1/2 z-40 flex w-[calc(100%-24px)] max-w-xl
+                -translate-x-1/2 gap-2 overflow-x-auto rounded-xl
+                border border-white/10 bg-black/70 p-2 backdrop-blur-md
+                bottom-[max(10px,env(safe-area-inset-bottom))]
+              "
+              onClick={(event) => event.stopPropagation()}
+            >
+              {images.map((media, index) => {
+                const mediaIsVideo = isVideoMedia(media);
+
+                return (
+                  <button
+                    key={`${media}-${index}`}
+                    type="button"
+                    onClick={() => setCurrentIndex(index)}
+                    className={`relative h-12 w-12 flex-none overflow-hidden rounded-md border-2 transition sm:h-14 sm:w-14 md:h-16 md:w-16 ${
+                      currentIndex === index
+                        ? "border-[#d4af37]"
+                        : "border-transparent opacity-60 hover:opacity-100"
+                    }`}
+                    aria-label={`Afficher le média ${index + 1}`}
+                  >
+                    {mediaIsVideo ? (
+                      <>
+                        <video
+                          src={media}
+                          muted
+                          playsInline
+                          preload="metadata"
+                          className="h-full w-full object-cover"
+                        />
+
+                        <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/35 text-white">
+                          <Play className="h-4 w-4 fill-current" />
+                        </span>
+                      </>
+                    ) : (
+                      <img
+                        src={media}
+                        alt=""
+                        loading="lazy"
+                        className="h-full w-full object-cover"
+                      />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
     </>
   );
 }
