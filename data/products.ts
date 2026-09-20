@@ -21,9 +21,7 @@ export const products: Product[] = [
     categorySlugs: ["abayas"],
     images: [
       "/images/categories/Pashmina/Abaya8.JPG",
-      "/images/categories/Pashmina/Abaya12.JPG",
       "/images/categories/Pashmina/Abaya5.JPG",
-      "/images/categories/Pashmina/Abaya11.JPG",
       "/images/categories/Pashmina/Abaya7.JPG",
     ],
     sizes: ["52", "54", "56", "58", "60", "62"],
@@ -43,7 +41,6 @@ export const products: Product[] = [
     "/images/categories/Luxury-abaya/lux2.JPG",
     "/images/categories/Luxury-abaya/lux3.JPG",
     "/images/categories/Luxury-abaya/lux4.JPG",
-    "/images/categories/Luxury-abaya/lux5.JPG",
     "/images/categories/Luxury-abaya/lux6.JPG",
     "/images/categories/Luxury-abaya/lux7.JPG",
     "/images/categories/Luxury-abaya/lux8.JPG",
