@@ -3,7 +3,7 @@ import { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Smyth Collection",
-    short_name: "Smyth",
+    short_name: "Smyth Collection",
     description: "Mode élégante et raffinée pour hommes et femmes.",
 
     start_url: "/",
