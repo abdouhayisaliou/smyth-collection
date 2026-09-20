@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { notFound, useParams } from "next/navigation";import {
+import { notFound, useParams, useSearchParams } from "next/navigation";
+import {
   ArrowLeft,
   Heart,
   MessageCircle,
@@ -74,55 +75,277 @@ type CategorySlug = keyof typeof categories;
 
 export default function CategoryPage() {
   const params = useParams<{ slug: string }>();
-  const slug = params.slug;
-  const [favorites, setFavorites] = useState<string[]>([]);
+  const searchParams = useSearchParams();
 
-  if (!(slug in categories)) {
-    notFound();
-  }
+  const slug = params.slug;
+  const productId = searchParams.get("product");
+
+  const [favorites, setFavorites] = useState<string[]>([]);
 
   const categorySlug = slug as CategorySlug;
   const category = categories[categorySlug];
 
+  /*
+   * Produit sélectionné depuis une recherche ou les favoris.
+   */
+  const selectedProduct = productId
+    ? products.find((product) => product.id === productId)
+    : undefined;
+
+  /*
+   * Produits de la catégorie actuelle.
+   */
   const categoryProducts = products.filter((product) =>
     product.categorySlugs.includes(categorySlug),
   );
 
+  /*
+   * Chargement des favoris.
+   */
   useEffect(() => {
-  const savedFavorites = localStorage.getItem("smyth-favorites");
+    const savedFavorites = localStorage.getItem("smyth-favorites");
 
-  if (!savedFavorites) {
-    return;
-  }
-
-  try {
-    const parsedFavorites = JSON.parse(savedFavorites);
-
-    if (Array.isArray(parsedFavorites)) {
-      setFavorites(parsedFavorites);
+    if (!savedFavorites) {
+      return;
     }
-  } catch {
-    localStorage.removeItem("smyth-favorites");
-  }
-}, []);
 
+    try {
+      const parsedFavorites = JSON.parse(savedFavorites);
+
+      if (Array.isArray(parsedFavorites)) {
+        setFavorites(parsedFavorites);
+      }
+    } catch {
+      localStorage.removeItem("smyth-favorites");
+    }
+  }, []);
+
+  /*
+   * Gestion des favoris.
+   */
   const toggleFavorite = (productId: string) => {
-  setFavorites((currentFavorites) => {
-    const isAlreadyFavorite = currentFavorites.includes(productId);
+    setFavorites((currentFavorites) => {
+      const isAlreadyFavorite = currentFavorites.includes(productId);
 
-    const updatedFavorites = isAlreadyFavorite
-      ? currentFavorites.filter((id) => id !== productId)
-      : [...currentFavorites, productId];
+      const updatedFavorites = isAlreadyFavorite
+        ? currentFavorites.filter((id) => id !== productId)
+        : [...currentFavorites, productId];
 
-    localStorage.setItem(
-      "smyth-favorites",
-      JSON.stringify(updatedFavorites),
+      localStorage.setItem(
+        "smyth-favorites",
+        JSON.stringify(updatedFavorites),
+      );
+
+      return updatedFavorites;
+    });
+  };
+
+  /*
+   * Catégorie inexistante.
+   */
+  if (!category) {
+    notFound();
+  }
+
+  /*
+   * ============================================================
+   * FICHE PRODUIT
+   * ============================================================
+   *
+   * Exemple :
+   * /boutique/abayas?product=luxury-abaya
+   */
+  if (selectedProduct) {
+    const product = selectedProduct;
+
+    return (
+      <main className="min-h-screen bg-[#0b0704] text-white">
+        {/* En-tête */}
+        <section className="relative overflow-hidden border-b border-[#d4af37]/20">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(212,175,55,0.15),transparent_35%),linear-gradient(135deg,#080503_0%,#1b1009_55%,#080503_100%)]" />
+
+          <div className="relative z-10 mx-auto max-w-7xl px-5 py-6 md:px-8 md:py-8">
+            <div className="flex items-center justify-between gap-4">
+              <Link
+                href={`/boutique/${categorySlug}`}
+                className="inline-flex items-center gap-2 border border-[#d4af37]/45 bg-black/30 px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#e5bd67] backdrop-blur transition hover:bg-[#d4af37] hover:text-black"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Retour
+              </Link>
+
+              <Link href="/" aria-label="Retour à l’accueil">
+                <img
+                  src="/images/logo-smyth4.png"
+                  alt="Smyth Collection"
+                  className="h-20 w-auto object-contain md:h-24"
+                />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Fiche produit */}
+        <section className="relative overflow-hidden px-5 py-10 md:px-8 md:py-16">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(212,175,55,0.12),transparent_28%),linear-gradient(135deg,#080503_0%,#1b1009_52%,#080503_100%)]" />
+
+          <div className="relative z-10 mx-auto max-w-7xl">
+            <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
+              {/* Galerie */}
+              <div className="min-w-0">
+                <div className="overflow-hidden border border-[#d4af37]/30 bg-[#100a06] shadow-[0_25px_80px_rgba(0,0,0,0.45)]">
+                  <ProductMediaGallery
+                    images={product.images}
+                    productName={product.name}
+                  />
+                </div>
+              </div>
+
+              {/* Informations */}
+              <div className="flex flex-col justify-center">
+                <p className="text-xs uppercase tracking-[0.35em] text-[#d4af37]">
+                  Smyth Collection
+                </p>
+
+                <h1 className="mt-4 font-serif text-4xl leading-tight md:text-6xl">
+                  {product.name}
+                </h1>
+
+                {product.description && (
+                  <p className="mt-6 max-w-xl text-sm leading-7 text-white/65 md:text-base">
+                    {product.description}
+                  </p>
+                )}
+
+                {/* Prix */}
+                <div className="mt-8 border-y border-white/10 py-6">
+                  <p className="mb-4 text-[10px] uppercase tracking-[0.25em] text-white/40">
+                    Tarification
+                  </p>
+
+                  <div className="space-y-3">
+                    {product.pricing.map((offer) => (
+                      <div
+                        key={`${product.id}-${offer.quantity}`}
+                        className="flex items-center justify-between gap-4"
+                      >
+                        <span className="text-sm text-white/70">
+                          {offer.quantity} pièce
+                          {offer.quantity > 1 ? "s" : ""}
+                        </span>
+
+                        <span className="font-serif text-xl text-[#d4af37]">
+                          {offer.price}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tailles */}
+                {product.sizes.length > 0 && (
+                  <div className="mt-7">
+                    <p className="text-[10px] uppercase tracking-[0.25em] text-white/40">
+                      Tailles disponibles
+                    </p>
+
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {product.sizes.map((size) => (
+                        <span
+                          key={size}
+                          className="border border-white/15 bg-white/[0.03] px-4 py-2 text-xs text-white/80"
+                        >
+                          {size}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Disponibilité */}
+                <div className="mt-7">
+                  <p className="text-[10px] uppercase tracking-[0.25em] text-white/40">
+                    Disponibilité
+                  </p>
+
+                  <p
+                    className={`mt-2 text-xs font-medium uppercase tracking-[0.15em] ${
+                      product.status === "Disponible sur commande"
+                        ? "text-[#dfa948]"
+                        : "text-[#8dc889]"
+                    }`}
+                  >
+                    {product.status}
+                  </p>
+                </div>
+
+                {/* Actions */}
+                <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                  <a
+                    href={`https://wa.me/4917623345700?text=${encodeURIComponent(
+                      `Bonjour Smyth Collection, je souhaite avoir des informations sur : ${product.name}`,
+                    )}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex flex-1 items-center justify-center gap-2 bg-[#d4af37] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-black transition hover:bg-[#e5bd67]"
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                    Commander
+                  </a>
+
+                  <button
+                    type="button"
+                    onClick={() => toggleFavorite(product.id)}
+                    className={`flex items-center justify-center gap-2 border px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] transition ${
+                      favorites.includes(product.id)
+                        ? "border-[#d4af37] bg-[#d4af37] text-black"
+                        : "border-[#d4af37]/50 text-[#d4af37] hover:bg-[#d4af37] hover:text-black"
+                    }`}
+                    aria-label={
+                      favorites.includes(product.id)
+                        ? `Retirer ${product.name} des favoris`
+                        : `Ajouter ${product.name} aux favoris`
+                    }
+                    aria-pressed={favorites.includes(product.id)}
+                  >
+                    <Heart
+                      className={`h-4 w-4 ${
+                        favorites.includes(product.id)
+                          ? "fill-current"
+                          : ""
+                      }`}
+                    />
+
+                    {favorites.includes(product.id)
+                      ? "Favori"
+                      : "Ajouter aux favoris"}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Retour à la collection */}
+            <div className="mt-16 border-t border-white/10 pt-8">
+              <Link
+                href={`/boutique/${categorySlug}`}
+                className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#d4af37] transition hover:text-[#e5bd67]"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Voir toute la collection {category.name}
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
     );
+  }
 
-    return updatedFavorites;
-  });
-};
-  
+  /*
+   * ============================================================
+   * PAGE CATÉGORIE NORMALE
+   * ============================================================
+   */
+
   return (
     <main className="min-h-screen bg-[#0b0704] text-white">
       {/* En-tête de la catégorie */}
@@ -211,6 +434,7 @@ export default function CategoryPage() {
                       images={product.images}
                       productName={product.name}
                     />
+
                     {/* Favori */}
                     <button
                       type="button"
@@ -233,7 +457,9 @@ export default function CategoryPage() {
                     >
                       <Heart
                         className={`h-4 w-4 ${
-                          favorites.includes(product.id) ? "fill-current" : ""
+                          favorites.includes(product.id)
+                            ? "fill-current"
+                            : ""
                         }`}
                       />
                     </button>
