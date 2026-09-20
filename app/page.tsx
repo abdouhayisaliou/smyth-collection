@@ -7,6 +7,7 @@ import InstallButton from "@/components/InstallButton";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import { products } from "@/data/products";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   Heart,
@@ -107,6 +108,22 @@ export default function Home() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
+  const router = useRouter();
+
+const openProductPage = (product: (typeof products)[number]) => {
+  const categorySlug = product.categorySlugs[0];
+
+  if (!categorySlug) {
+    return;
+  }
+
+  setIsSearchOpen(false);
+  setIsFavoritesOpen(false);
+
+  router.push(
+    `/boutique/${categorySlug}?product=${encodeURIComponent(product.id)}`
+  );
+};
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [productSlides, setProductSlides] = useState<Record<string, number>>({});
@@ -1780,6 +1797,7 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
               return (
                 <article
                   key={product.id}
+                  onClick={() => openProductPage(product)}
                   className="flex gap-4 border border-white/10 bg-white/[0.03] p-3"
                 >
                   {/* Média */}
@@ -1825,6 +1843,7 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
                         )}`}
                         target="_blank"
                         rel="noreferrer"
+                        onClick={(event) => event.stopPropagation()}
                         className="flex flex-1 items-center justify-center gap-2 border border-[#d4af37]/50 px-3 py-2 text-[9px] font-bold uppercase tracking-[0.12em] text-[#d4af37] transition hover:bg-[#d4af37] hover:text-black"
                       >
                         <MessageCircle className="h-3.5 w-3.5" />
@@ -1833,7 +1852,10 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
 
                       <button
                         type="button"
-                        onClick={() => toggleFavorite(product.id)}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          toggleFavorite(product.id);
+                        }}
                         className="flex h-9 w-9 items-center justify-center border border-white/20 text-white transition hover:border-red-400 hover:text-red-400"
                         aria-label={`Retirer ${product.name} des favoris`}
                       >
@@ -2018,15 +2040,7 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
                     {/* Image ou vidéo */}
                     <button
                       type="button"
-                      onClick={() => {
-                        closeSearch();
-
-                        openFullscreenGallery(
-                          product.images,
-                          0,
-                          product.name
-                        );
-                      }}
+                      onClick={() => openProductPage(product)}
                       className="h-24 w-20 shrink-0 overflow-hidden bg-black sm:h-28 sm:w-24"
                       aria-label={`Voir ${product.name}`}
                     >
