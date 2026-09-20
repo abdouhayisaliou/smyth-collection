@@ -452,8 +452,8 @@ return (
   {/* Menu mobile */}
   {isMenuOpen && (
     <div className="fixed inset-0 z-[1000] bg-black/80 backdrop-blur-sm lg:hidden">
-      <div className="absolute right-0 top-0 h-full w-[82%] max-w-sm border-l border-[#d4af37]/40 bg-[#0d0906] p-6 shadow-2xl">
-        <div className="mb-10 flex items-center justify-between">
+<div className="absolute right-0 top-0 h-full w-[82%] max-w-sm border-l border-[#d4af37]/40 bg-[#0d0906] p-6 pt-[max(24px,env(safe-area-inset-top))] shadow-2xl"> 
+  <div className="mb-10 flex items-center justify-between">
           <img
             src="/images/logo-smyth4.png"
             alt="Logo Smyth Collection"
@@ -1761,8 +1761,8 @@ className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bord
     />
 
     {/* Panneau */}
-    <aside className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col border-l border-[#d4af37]/30 bg-[#0b0704] shadow-2xl">
-      {/* En-tête */}
+<aside className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col border-l border-[#d4af37]/30 bg-[#0b0704] shadow-2xl pt-[env(safe-area-inset-top)]">
+  {/* En-tête */}
       <div className="flex items-center justify-between border-b border-white/10 px-5 py-5">
         <div>
           <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#d4af37]">
