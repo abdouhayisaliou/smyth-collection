@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { products } from "@/data/products";
 
 const categorySEO = {
   abayas: {
