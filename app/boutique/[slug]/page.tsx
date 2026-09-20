@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { notFound, useParams, useSearchParams } from "next/navigation";
 import {
@@ -92,6 +92,58 @@ export default function CategoryPage() {
     ? products.find((product) => product.id === productId)
     : undefined;
 
+  const productSchema = useMemo(() => {
+  if (!selectedProduct) {
+    return null;
+  }
+
+  const firstPricing = selectedProduct.pricing[0];
+
+  if (!firstPricing) {
+    return null;
+  }
+
+  const price = Number(
+    firstPricing.price
+      .replace("€", "")
+      .replace(/\s/g, "")
+      .replace(",", "."),
+  );
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: selectedProduct.name,
+    description: selectedProduct.description,
+    image: selectedProduct.images
+      .filter((image) => !/\.(mp4|webm|mov)$/i.test(image))
+      .map(
+        (image) =>
+          `https://www.smyth-collection.com${image}`,
+      ),
+    brand: {
+      "@type": "Brand",
+      name: "Smyth Collection",
+    },
+    offers: {
+      "@type": "Offer",
+      url: `https://www.smyth-collection.com/boutique/${slug}?product=${encodeURIComponent(
+        selectedProduct.id,
+      )}`,
+      priceCurrency: "EUR",
+      price,
+      availability:
+        selectedProduct.status === "Disponible immédiatement"
+          ? "https://schema.org/InStock"
+          : "https://schema.org/PreOrder",
+      seller: {
+        "@type": "Organization",
+        name: "Smyth Collection",
+      },
+    },
+  };
+}, [selectedProduct, slug]);
+
   /*
    * Produits de la catégorie actuelle.
    */
@@ -156,10 +208,18 @@ export default function CategoryPage() {
    * /boutique/abayas?product=luxury-abaya
    */
   if (selectedProduct) {
-    const product = selectedProduct;
+  const product = selectedProduct;
 
-    return (
-      <main className="min-h-screen bg-[#0b0704] text-white">
+  return (
+    <main className="min-h-screen bg-[#0b0704] text-white">
+      {productSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(productSchema),
+          }}
+        />
+      )}
         {/* En-tête */}
         <section className="relative overflow-hidden border-b border-[#d4af37]/20">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(212,175,55,0.15),transparent_35%),linear-gradient(135deg,#080503_0%,#1b1009_55%,#080503_100%)]" />
