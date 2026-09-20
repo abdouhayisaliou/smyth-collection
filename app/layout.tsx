@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://smyth-collection.com"),
+  metadataBase: new URL("https://www.smyth-collection.com"),
 
   title: {
     default: "Smyth Collection | Mode élégante et raffinée",
@@ -10,36 +10,39 @@ export const metadata: Metadata = {
   },
 
   description:
-    "Smyth Collection propose une sélection de mode élégante et raffinée : abayas, laces, bazins, sacs et chaussures.",
+    "Smyth Collection est une boutique de mode élégante et raffinée proposant des abayas, laces, bazins, sacs, chaussures et accessoires.",
 
   applicationName: "Smyth Collection",
 
   alternates: {
-    canonical: "https://smyth-collection.com",
+    canonical: "https://www.smyth-collection.com",
   },
 
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
   },
 
   openGraph: {
     type: "website",
     locale: "fr_FR",
-    url: "https://smyth-collection.com",
+    url: "https://www.smyth-collection.com",
     siteName: "Smyth Collection",
     title: "Smyth Collection | Mode élégante et raffinée",
     description:
-      "Découvrez Smyth Collection : abayas, laces, bazins, sacs et chaussures sélectionnés avec soin.",
+      "Découvrez Smyth Collection : abayas, laces, bazins, sacs, chaussures et accessoires sélectionnés avec soin.",
   },
 
   twitter: {
     card: "summary_large_image",
     title: "Smyth Collection | Mode élégante et raffinée",
     description:
-      "Découvrez notre sélection de mode élégante et raffinée.",
+      "Découvrez Smyth Collection : abayas, laces, bazins, sacs, chaussures et accessoires.",
   },
-
 
   icons: {
     icon: [
@@ -63,6 +66,8 @@ export const metadata: Metadata = {
       },
     ],
   },
+
+  manifest: "/manifest.webmanifest",
 };
 
 export const viewport: Viewport = {
